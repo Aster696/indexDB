@@ -35,30 +35,41 @@ export class AppComponent {
   }
 
   getVoterList() {
-    let data = {
-      end_point: 'FETCH_VOTER_LIST_API_URL',
-      page: 1,
-      limit: 30,
-    }
-    this.http
-    .getVoterList(data)
-    .subscribe(
-      (res: any)=> {
-        if(res.success) {
-          this.voterList = res?.data
-          this.indexedDbService.saveData(1, { response_data: this.voterList })
-        }else {
-          this.indexedDbService.getData(1).then((result) => {
-            this.voterList = result.data;
-            console.log(this.voterList)
-          });
+    this.networkStatusService.isOnline().subscribe((online: any) => {
+      console.log(online)
+      if (online){
+        let data = {
+          end_point: 'FETCH_VOTER_LIST_API_URL',
+          page: 1,
+          limit: 30,
         }
-      }, (error: any) => {
+        this.http
+        .getVoterList(data)
+        .subscribe(
+          (res: any)=> {
+            if(res.success) {
+              this.voterList = res?.data
+              this.indexedDbService.saveData(1, { response_data: this.voterList })
+            }else {
+              this.indexedDbService.getData(1).then((result) => {
+                this.voterList = result.data;
+                console.log(this.voterList)
+              });
+            }
+          }, (error: any) => {
+            this.indexedDbService.getData(1).then((result) => {
+              this.voterList = result.data;
+              console.log(this.voterList)
+            });
+          }
+        )
+      } else{
         this.indexedDbService.getData(1).then((result) => {
-          this.voterList = result.data;
-          console.log(this.voterList)
+          this.data = result.data.response_data;
+          console.log(this.data)
         });
       }
-    )
+    });
+    
   }
 }
