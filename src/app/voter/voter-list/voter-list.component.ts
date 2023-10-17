@@ -7,6 +7,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { GlobalService } from 'src/app/service/global.service';
 import { ApiService } from 'src/app/service/http-service';
+import { IndexedDbService } from 'src/app/service/index-db-server';
+import { NetworkStatusService } from 'src/app/service/network-checker-service';
 import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-voter-list',
@@ -65,7 +67,9 @@ followUpList : any= []
 
   voterParams: any
   
-  constructor(public global: GlobalService, private fb:FormBuilder, private http: ApiService, private message: NzMessageService, private router: Router, private aroute: ActivatedRoute) { }
+  constructor(public global: GlobalService, private fb:FormBuilder, private http: ApiService, private message: NzMessageService, private router: Router, private aroute: ActivatedRoute,
+    private indexedDbService: IndexedDbService, private networkStatusService: NetworkStatusService  
+  ) { }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -90,8 +94,8 @@ followUpList : any= []
         this.getVotersList()
       }
     })
-    this.getPreVotersList()
-    this.getPreVotersList()
+    // this.getPreVotersList()
+    // this.getPreVotersList()
   }
 
   createMobileForm(data?) {
@@ -361,24 +365,34 @@ followUpList : any= []
         });
       }
     });
-    this.http.getVoterList(data).subscribe((res: any) => {
-      if (res?.success) {
-        this.votersList = res?.data;
-        this.total_count = res.total_count
-        this.api_loader['list'] = false
-        // console.log('Network data:', res);
-
-        // Cache the network response for future use
-        const cacheKey = 'voter_list';
-        caches.open('voter_list').then(cache => {
-          const response = new Response(JSON.stringify(res));
-          cache.put(cacheKey, response);
-        });
-      } else {
-        this.api_loader['list'] = false
-      }
-    })
+    this.networkStatusService.isOnline().subscribe((online: any) => {
+      console.log(online)
+      if (online){
+        this.http.getVoterList(data).subscribe((res: any) => {
+          if (res?.success) {
+            this.votersList = res?.data;
+            this.total_count = res.total_count
+            this.api_loader['list'] = false
+            // console.log('Network data:', res);
     
+            // Cache the network response for future use
+            const cacheKey = 'voter_list';
+            caches.open('voter_list').then(cache => {
+              const response = new Response(JSON.stringify(res));
+              cache.put(cacheKey, response);
+            });
+          } else {
+            this.api_loader['list'] = false
+          }
+        })
+        
+      } else{
+        this.indexedDbService.getData(1).then((result) => {
+          this.votersList = result.data.response_data;
+          console.log(this.votersList)
+        });
+      }
+    });
   }
 
   dumbPage: number = 1
