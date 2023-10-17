@@ -19,6 +19,10 @@ import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { WelcomeModule } from './pages/welcome/welcome.module';
+import { GlobalService } from './service/global.service';
+import { AuthGuard } from './service/auth.guard';
+import { DemoNgZorroAntdModule } from './ng-zorro-antd.module';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 registerLocaleData(en);
 
@@ -42,10 +46,13 @@ registerLocaleData(en);
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
-    WelcomeModule
+    WelcomeModule,
+    NzAvatarModule,
   ],
   providers: [
     ApiService,
+    GlobalService,
+    AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: OfflineApiInterceptor, multi: true },
     {
       provide: HTTP_INTERCEPTORS,

@@ -1,6 +1,5 @@
-import { NgModule, NgModuleFactoryLoader } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
-import { SharedModule } from '../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationRoutingModule } from './authentication-routing.module';
 
@@ -35,7 +34,6 @@ const antdModule= [
 @NgModule({
     imports: [
         CommonModule,
-        SharedModule,
         ReactiveFormsModule,
         AuthenticationRoutingModule,
         ReactiveFormsModule,

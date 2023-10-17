@@ -4,7 +4,7 @@
       <div class="container-fluid bg-primary w-100 h-100 px-3 bg-circles">
         <div class="d-flex justify-content-between align-items-center py-3">
           <div class="d-flex flex-wrap justify-content-between align-items-center">
-            <img nz-image [src]="domain_user?.account_logo" height="60px" alt=""
+            <img nz-image [src]="domain_user?.account_logo" width="60px" alt=""
               class="h-auto mr-3">
             <h5 class="text-white font-weight-semibold text-wrap">
               {{domain_user?.name?.en || '-'}}
@@ -46,9 +46,9 @@
       </div>
     </div>
     <div class="col-lg-12 bg-white login-bg-setter">
-      <div class="container h-100">
+      <div class=" h-100">
         <div class="row no-gutters h-100 align-items-center">
-          <div class="col-md-8 col-lg-7 col-xl-6 px-3 mx-auto">
+          <div class="col-md-8 col-lg-7 col-xl-6 m-auto">
             <div *ngIf="_currentSection == 'loginForm' && !ifTokenAuthorized">
               <!-- <p class="text-dark">{{ router.url == '/authentication/employee-login' ? 'Employee Login' : 'StockistLogin'}}</p> -->
               <h3 class="font-weight-bold mb-0">{{loginPageContext?.login?.title}}</h3>

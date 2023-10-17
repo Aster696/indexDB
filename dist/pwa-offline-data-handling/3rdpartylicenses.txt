@@ -1131,7 +1131,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 
+ng-otp-input
+MIT
+
 ng-zorro-antd
+MIT
+
+ngx-permissions
 MIT
 
 performance-now
