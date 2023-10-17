@@ -11,7 +11,8 @@ export class IndexedDbService {
     // this.initDatabase();
     this.db = new Dexie('VoterDataset');
     this.db.version(1).stores({
-      voterData: 'id, data'
+      voterData: 'id, data',
+      voterActivityData: '++id, data'
     });
   }
 
@@ -32,5 +33,12 @@ export class IndexedDbService {
 
   getAllData() {
     return this.db.table("voterData").toArray();
+  }
+
+
+
+  ////////////// offline activity /////////////////
+  storeActivityData(data: any){
+    return this.db.table("voterActivityData").put({ data });
   }
 }

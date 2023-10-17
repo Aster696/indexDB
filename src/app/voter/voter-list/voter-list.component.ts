@@ -50,6 +50,7 @@ followUpList : any= []
   isBannerVisible: boolean = true;
   _currLanguage: any;
   globalData: any
+  _isOnline: boolean = false;
 
 
 
@@ -140,6 +141,20 @@ followUpList : any= []
   }
   isRating: boolean = false
   rateVoter(){
+
+    if(!this._isOnline){
+
+      console.log("Rate voter calling here only")
+      let payload = {}
+      payload['device_details'] = JSON.stringify(this.global.location)
+      payload['rating'] = JSON.stringify(this.rating)
+      payload['rating_type'] = this.rating_type
+      payload['service_type'] = "RATING"
+      payload['voter_id'] = this.voter_id
+      this.indexedDbService.storeActivityData(payload)
+      this.isRatingDrawer = false
+      return
+    }
     this.isRating = true
     let data= new FormData();
     // data['voter_id'] = this._currVoterId
@@ -182,6 +197,20 @@ followUpList : any= []
 
   isMobile: boolean = false
   editMobileNumber() {
+    if(!this._isOnline){
+
+      console.log("Saving mobile to offline")
+      let payload = {}
+      payload['device_details'] = JSON.stringify(this.global.location)
+      payload['mobile'] = this.mobileForm?.get('mobile')?.value
+      payload['service_type'] = "MOBILE"
+      payload['voter_id'] = this.voter_id
+      this.indexedDbService.storeActivityData(payload)
+      this.isVisible = false
+      this.isMobile = false
+      return
+    }
+
     if(this.mobileForm?.valid) {
       this.isMobile = true
       let formData = new FormData()
@@ -246,6 +275,16 @@ followUpList : any= []
   }
 
   submitImageForm() {
+
+    if(!this._isOnline){
+      let payload = {}
+      payload['device_details'] = JSON.stringify(this.global.location)
+      payload['profile_picture'] = this.fileList
+      payload['service_type'] = "PROFILE_PICTURE"
+      payload['voter_id'] = this.voter_id
+      this.indexedDbService.storeActivityData(payload)
+      return
+    }
     
     var form_data = new FormData();
     form_data.append('device_details', JSON.stringify(this.global.location))
@@ -368,6 +407,7 @@ followUpList : any= []
       }
     });
     this.networkStatusService.isOnline().subscribe((online: any) => {
+      this._isOnline = online
       console.log(online)
       if (online){
         this.http.getVoterList(data).subscribe((res: any) => {
