@@ -66,7 +66,7 @@ export class PrimaryAttributesComponent implements OnInit {
         this.getAttributeList();
         this.attributeList[i]._isVisible = false;
       }else{
-        this.message.error(res.message);
+        // this.message.error(res.message);
         this.attributeList[i]._isVisible = false;
       }
       this.isTagAdded = false

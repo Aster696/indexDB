@@ -89,7 +89,7 @@ export class RelationshipMappingComponent implements OnInit {
         this.getAttributeList();
 
       } else {
-        this.message.error(res.message)
+        // this.message.error(res.message)
         this.attributeList[i]._isVisible = false;
       }
     })

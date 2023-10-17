@@ -217,7 +217,7 @@ export class VoterProfileComponent implements OnInit {
         this.api_loading['card'] = false;
       }
     }, error => {
-      this.message.error(error);
+      // this.message.error(error);
       this.api_loading['card'] = false;
     });
   }
@@ -333,7 +333,7 @@ export class VoterProfileComponent implements OnInit {
         this.message.success(res.message)
         this.api_loading['button_markActivity'] = false;
       }else{
-        this.message.error(res.message)
+        // this.message.error(res.message)
         this.api_loading['button_markActivity'] = false
       }
     },error=>{
@@ -477,13 +477,13 @@ getRelationshipList(keyword?) {
           if(res?.success) {
             this.message.success('Facebook link saved successfully')
           }else {
-            this.message.error(res?.message)
+            // this.message.error(res?.message)
           }
           this.isFacebook = false
           this.isVisible = false
           this.getVoterDetals()
         }, (error: any) => {
-          this.message.error(error?.message)
+          // this.message.error(error?.message)
           this.isFacebook = false
           this.isVisible = false
         }
