@@ -424,7 +424,7 @@
             [nzVisible]="quickViewVisible" nzPlacement="bottom" (nzOnClose)="callMultipleAPI();quickViewToggle()"
             [nzHeight]="600">
             <!-- <app-quick-view></app-quick-view> -->
-            <div class="row mx-3">
+            <div *nzDrawerContent class="row mx-3">
                 <div class="col-md-12">
                     <form nz-form [formGroup]="followUpForm">
                         <div class="row mt-3">
@@ -570,7 +570,7 @@
             <div class="d-flex justify-content-center flex-column">
 
             </div>
-            <div class="row">
+            <div *nzDrawerContent class="row">
                 <div class="col-sm-12 col-6 mb-3">
                     <h6>Rate Voter</h6>
                 </div>
