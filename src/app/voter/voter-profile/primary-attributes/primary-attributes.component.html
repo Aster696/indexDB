@@ -1,0 +1,35 @@
+<section>
+   <div class="row">
+    <div class="col-md-4" *ngFor="let item of attributeList; let i = index">
+        <nz-card [nzTitle]="adAttribute">
+            <ng-template #adAttribute>
+                <div class="d-flex align-items-center flex-wrap w-100">
+                    <h6 class="mr-5">{{_currLanguage == 'en' ? item?.name?.en :
+                        item?.name?.hi}}</h6>
+                        
+                    <nz-select [(ngModel)]="item._currTagValue" nzPlaceHolder="Enter Tags to Map" class="selectFilter mr-2" nzShowSearch nzAllowClear
+                        (nzFocus)="getTagLIst(item?.id)" (keyup)="test($event,i)">
+                        <nz-option *ngFor="let item of tagsList" [nzValue]="item?.name?.en ? item?.name?.en : item?.name?.hi"
+                            [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                        </nz-option>
+                    </nz-select>
+                    <span nz-icon nzType="plus-circle" class="mr-3" nzTheme="outline" (click)="item._currTagValue ? addTagForAttribute(item, i) : message.info('Please select a tag')"></span>
+                    <ng-template #indicatorTemplate><span nz-icon nzType="loading" *ngIf="attributeList[i]._isVisible">
+
+                    </span></ng-template>
+                        <nz-spin [nzSpinning]="isTagAdded" nzSimple [nzIndicator]="indicatorTemplate"></nz-spin>
+                </div>
+            </ng-template>
+            <div class="d-flex flex-wrap align-items-center">
+                <nz-tag *ngFor="let tag of item?.tags; let i = index">
+                    {{  tag ? (_currLanguage == "en" ?  tag?.name?.en : tag?.name?.hi): "" }}
+                </nz-tag>
+                <!-- <nz-tag [nzColor]="'purple'" nf>
+                    {{_currLanguage == 'en' ? item?.tag?.name?.en :
+                        item?.tag?.name?.hi}}
+                </nz-tag> -->
+            </div>
+        </nz-card>
+    </div>
+   </div>
+</section>

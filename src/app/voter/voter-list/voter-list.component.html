@@ -1,0 +1,925 @@
+<div class="bread-crum-header">
+    <button nz-button nzType="primary" class="mr-2 mb-2" routerLink="/voter/add-voter">+ Add Voter</button>
+</div>
+
+<div class="d-block align-items-center mb-3">
+    <div class="row">
+        <div class="col-12 col-lg-4 mb-2">
+            <div class="d-flex">
+
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                    <input type="text" nz-input placeholder="Search By Full Name & Epic Number"
+                        [(ngModel)]="_currSearchValue" (keyup.enter)="getVotersList()" />
+                </nz-input-group>
+                <ng-template #suffixIconButton>
+                    <button nz-button nzType="secondary" nzSearch (click)="getVotersList()">
+                        <i nz-icon nzType="search"></i>
+                    </button>
+                </ng-template>
+                <button nz-button nzType="default" class="ml-3 mb-2" nzShape="circle" (click)="resetFilter()">
+                    <i nz-icon nzType="undo"></i>
+                </button>
+                <button nz-button [nzType]="'link'" (click)="quickViewToggle(); _currToggleActions = ''"
+                class="border px-3 mx-2 mb-2 display-768px">Filters</button>
+            </div>
+        </div>
+        <div class="col-lg-8 col-12 mb-2 d-flex flex-wrap justify-content-end">
+            <!-- <button nz-button (click)="showModal('slip')" class="mr-2 mb-2">
+                Slip 
+                <span nz-icon nzType="download" nzTheme="outline"></span>
+            </button> -->
+            <button nz-button (click)="exportExcel()" class="mr-2 mb-2 display-none-768px ">Export</button>
+            <button nz-button [nzType]="'link'" [nz-tooltip]="'Choose Activity / Follow Up'"
+                [disabled]="setOfCheckedId.size == 0 ? true : false"
+                (click)="quickViewToggle(); _currToggleActions = 'multipleAction'; " class="border px-3 mb-2 display-none-768px">
+                Add Comment
+            </button>
+            <button nz-button [nzType]="'link'" (click)="quickViewToggle(); _currToggleActions = ''"
+                class="border px-3 mx-2 mb-2 display-none-768px ">Filters</button>
+
+            <!-- <button nz-button nzType="primary" class="mr-2 mb-2" routerLink="/voter/add-voter">+ Add Voter</button> -->
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="container bannerContext" *ngIf="isBannerVisible">
+        <!-- <div class="bannerContext"> -->
+        <!-- <span nz-icon nzType="close" nzTheme="outline" class="text-white font-size-16 font-weight-bold"
+            style="position: absolute; right: 1rem; top: 2rem;" (click)="isBannerVisible = false"></span>
+        <img src="../../../assets/images/Ext_Images/bannerImage.svg" class="w-100 img my-3" alt="">
+        <div class="d-flex flex-column align-items-center justify-content-center context py-3">
+            <img src="../../../assets/images/Ext_Images/Ellipse 1201cng_log.svg" alt="" height="40px">
+            <h6 class="text-white d-flex d-lg-none mb-0">{{_currLanguage == 'en' ? globalData?.party_name?.en : globalData?.party_name?.hi}}</h6>
+            <h3 class="text-white d-lg-flex d-none mb-0 font-size-24">{{_currLanguage == 'en' ? globalData?.party_name?.en : globalData?.party_name?.hi}}</h3>
+            <h4 class="text-white d-flex d-lg-none" style="white-space: nowrap;">{{_currLanguage == 'en' ? globalData?.name?.en : globalData?.name?.hi}}</h4>
+            <h1 class="text-white d-lg-flex d-none font-size-60" style="white-space: nowrap;">{{_currLanguage == 'en' ? globalData?.name?.en : globalData?.name?.hi}}</h1>
+            <button nz-button nzType="link" [routerLink]="'/home/about-party'"
+                class="d-xs-none d-lg-none d-flex bg-white text-primary align-items-center" nzSize="small">{{_currLanguage == 'en' ? 'Know More' : 'अधिक जानकारी'}}
+                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+            </button>
+            <button nz-button nzType="link" [routerLink]="'/home/about-party'"
+                class="d-xs-none d-lg-flex bg-white align-items-center text-primary d-none font-weight-bold" nzSize="large">{{_currLanguage == 'en' ? 'Know More' : 'अधिक जानकारी'}}
+                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+            </button>
+        </div> -->
+    </div>
+    <!-- <nz-card [nzLoading]="api_loader['list']" class="d-flex d-lg-none"> -->
+    <div class="">
+        <div class="display-768px">
+            <div class="row">
+                <div *ngIf="votersList?.length === 0"  class="col-12 d-flex justify-content-center">
+                    <nz-spin *ngIf="api_loader['list']" [nzLoading]="api_loader['list']" nzSimple [nzSize]="'large'"></nz-spin>
+                    <strong *ngIf="!api_loader['list']" class="font-20px">No Data Found</strong>
+                </div>
+                <div class="col-md-6 col-12" *ngFor="let item of votersList">
+                    <nz-card nzHoverable class="mr-md-2 pt-2 pb-2" [nzLoading]="api_loader['list']">
+                        <span class="d-flex justify-content-end">
+                            <span *ngIf="!item.star_marked" (click)="voter_id = item?.id; isStar = true; starLoader()" nz-icon nzType="star" nzTheme="outline"></span>
+                            <span *ngIf="item.star_marked" (click)="voter_id = item?.id; isStar = false; starLoader()" nz-icon nzType="star" nzTheme="fill" class="text-primary"></span>
+                        </span>
+                        <div *ngIf="item?.profile_picture" class="d-flex justify-content-end mt-2">
+                            <span (click)="file.click()" class="voter-avatar-container"></span>
+                            <nz-avatar nzSize="large" class="text-center voter-avatar"
+                                [nzSrc]="item?.profile_picture || temp_img"
+                                [nzShape]="'square'"
+                            ></nz-avatar>
+                            <input #file type="file" (change)="voter_id = item?.id; handleFileChange($event)" hidden accept="image/*">
+                        </div>
+                        <div *ngIf="!item?.profile_picture" class="d-flex justify-content-end mt-2">
+                            <button (click)="file.click()" class="my-md-4" nz-button nzType="primary">
+                                <span nz-icon nzType="camera" nzTheme="outline"></span>
+                            </button>
+                            <input #file type="file" (change)="voter_id = item?.id; handleFileChange($event)" hidden accept="image/*">
+                        </div>
+                        <div class="row w-100">
+                            <!-- <img nzIcon="user" width="80" height="80" class="mr-4 rounded-circle"
+                                    [src]="item?.profile_picture"> -->
+        
+                            <div class="col-12 mb-2">
+                                <h6 class="text-dark">{{_currLanguage == "en" ? (item?.full_name_en || '-') : ( item?.full_name_hi || '-')}}</h6>
+                                <label class="text-primary mb-2"> {{item?.epic_no}}</label><br><br>
+                                <label class="text-primary mb-3"> {{(item?.rln_first_name_hi || '-') + ' ' + (item?.rln_last_name_hi || '-') }} ({{item?.rln_type ? item?.rln_type : '-'}})</label>
+                                <div class="d-flex justify-content-start flex-wrap">
+                                    <nz-tag class="mr-2" style="max-width: fit-content;">Booth {{item?.booth}}</nz-tag>
+                                    <nz-tag style="max-width: fit-content;">Ward {{item?.ward_no ? item?.ward_no : '-'}}</nz-tag>
+                                    <nz-tag style="max-width: fit-content;">Sector {{item?.sector ? item?.sector : '-'}}</nz-tag>
+                                    <nz-tag style="max-width: fit-content;">Zone {{item?.zone ? item?.zone : '-'}}</nz-tag>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center ">
+    
+                                <div class="row">
+                                    <div class="col-4 mb-2">
+                                        <button
+                                            [routerLink]="'/voter/view-profile'" [queryParams]="{id:item?.id}"
+                                            nz-button
+                                            class="border"
+                                        >
+                                            View
+                                        </button>
+                                    </div>
+                                    <div class="col-4 mb-2">
+                                        <button
+                                            (click)="isRatingDrawer = true; voter_id=item?.id; rating = item?.rating; rating_type = item?.rating_type"
+                                            nz-button
+                                            class="border bg-primary text-white"
+                                        >
+                                            Rate
+                                        </button>
+                                    </div>
+                                    <div class="col-4 mb-2">
+                                        <button
+                                            (click)="voter_id = item.id; createMobileForm(item);showModal('mobile')"
+                                            nz-button
+                                            class="border bg-primary text-white"
+                                        >
+                                            Mobile
+                                        </button>
+                                    </div>
+                                    <div class="col-7 mb-2">
+                                        <button nz-button [nzType]="'link'" [nz-tooltip]="'Choose Activity / Follow Up'"
+                                            [disabled]="setOfCheckedId.size == 0 ? false : false"
+                                            (click)="quickViewToggle(); _currToggleActions = 'multipleAction'; voter_id = item.id;" class="border px-3">
+                                            Add Comment
+                                        </button>
+                                    </div>
+                                    <div class="col-5 mb-2">
+                                        <button (click)="showModal('slip', item)" nz-button [nzType]="'link'" [nz-tooltip]="'Voter slip'" class="border px-3">
+                                            Slip
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <span nz-icon nzType="right" nzSize="large" nzTheme="outline"
+                                    class="font-size-16 align-self-center"></span> -->
+                        </div>
+                        <!-- <nz-divider class="my-0"></nz-divider> -->
+                    </nz-card>
+                </div>
+            </div>
+            <nz-pagination 
+                [nzPageIndex]="pageIndex" [nzTotal]="total_count" nzShowSizeChanger [nzPageSize]="globalPageSize"
+                (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
+                [nzShowTotal]="botTotalCount"
+            ></nz-pagination>
+        </div>
+
+    </div>
+    <!-- </nz-card> -->
+
+    <div class="display-none-768px ">
+        <!-- <div class="d-flex jus"></div> -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <nz-card [nzLoading]="api_loader['list']">
+                    <div class="totalCount">
+                        <nz-table #rowSelectionTable [nzData]="votersList" [nzTotal]="total_count"
+                            [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzPageIndex]="pageIndex"
+                            [nzPageSize]="globalPageSize" (nzQueryParams)="votersList[0] ? getVotersList($event) : null"
+                            [nzShowTotal]="botTotalCount" [nzLoading]="api_loader['card']"
+                            (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+                            [nzScroll]="{ x: 'auto'}">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="70px" class="bg-primary text-white">#</th>
+                                    <th nzWidth="70px" [nzChecked]=" votersList[0] ? checked : false"
+                                        [nzIndeterminate]=" votersList[0] ? indeterminate : false"
+                                        (nzCheckedChange)="votersList[0] ? onAllChecked($event) : false"
+                                        class="bg-primary text-white bd-white"
+                                    >
+                                    </th>
+                                    <th nzWidth="70px" class="bg-primary text-white">Sr. No</th>
+                                    <th [nzWidth]="'150px'" class="text-left bg-primary text-white">Full Name</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Mobile</th>
+                                    <th [nzWidth]="'150px'" class="bg-primary text-white">Facebook Links</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Caste</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Epic No</th>
+                                    <th [nzWidth]="'130px'" class="bg-primary text-white">Age/ Gender</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Benificary</th>
+                                    <th [nzWidth]="'130px'" class="bg-primary text-white">Anubhag</th>
+                                    <th [nzWidth]="'130px'" class="bg-primary text-white">Booth Number</th>
+                                    <th [nzWidth]="'130px'" class="bg-primary text-white">Ward Number</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Ward Name</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Sector</th>
+                                    <th [nzWidth]="'100px'" class="bg-primary text-white">Zone</th>
+
+                                    <th [nzWidth]="'70px'" class="bg-primary text-white" nzRight>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let data of votersList; index as i">
+                                    <tr>
+                                        <td [nzExpand]="expandSet.has(data.id)"
+                                            (nzExpandChange)="onExpandChange(data.id, $event, i)"
+                                            class="mt-2"    
+                                        ></td>  
+                                        <td [nzChecked]="setOfCheckedId.has(data.id)"
+                                            [nzDisabled]="data.disabled"
+                                            (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                                        <td *ngIf="pageIndex == 1">{{i+1}}</td>
+                                        <td *ngIf="pageIndex > 1">{{( (pageIndex-1) * globalPageSize) +
+                                            (i+1)}}
+                                        </td>
+                                        <td class="text-left">
+                                            <a [routerLink]="['/voter/view-profile']" [queryParams]="{id:data.id}">
+                                                {{_currLanguage == "en" ? (data?.full_name_en || '-') : ( data?.full_name_hi || '-')}}
+                                            </a>
+                                        </td>
+                                        <td>{{data?.mobile ? data?.mobile : '-'}}</td>
+                                        <td>
+                                            <a *ngIf="data?.facebook_link" [href]="data?.facebook_link" target="_blank">
+                                                <span nz-icon nzType="facebook" nzTheme="outline"></span> Link
+                                            </a>
+                                            <span *ngIf="!data?.facebook_link">
+                                                -
+                                            </span>
+                                        </td>
+                                        <td>{{data?.caste ? data?.caste : '-'}}</td>
+                                        <td>{{data?.epic_no}}</td>
+                                        <td>{{data?.age + (data?.gender ? " / " + data?.gender : "/ -")}} </td>
+                                        <td>
+                                            <span nz-icon *ngIf="data?.is_benificary" nzType="check-circle"
+                                                class="text-success" nzTheme="outline"></span>
+                                            <span nz-icon *ngIf="!data?.is_benificary else noBenificary;"
+                                                nzType="close-circle" class="text-danger" nzTheme="outline"></span>
+                                            <ng-template #noBenificary>
+                                                Not updated
+                                            </ng-template>
+                                        </td>
+                                        <td>{{data?.anubhag ? data?.anubhag : '-'}}</td>
+                                        <td>{{data?.booth ? data?.booth : '-'}}</td>
+                                        <td>{{data?.ward_no ? data?.ward_no : '-'}}</td>
+                                        <td>{{data?.ward_name ? data?.ward_name : '-'}}</td>
+                                        <td>{{data?.sector ? data?.sector : '-'}}</td>
+                                        <td>{{data?.zone ? data?.zone : '-'}}</td>   
+                                        <td nzRight>
+                                            <div>
+                                                <a class="text-dark font-size-20" nz-dropdown [nzClickHide]="false"
+                                                    [nzTrigger]="'click'" (click)="getSwitchValue(data)"
+                                                    [nzPlacement]="'bottomRight'"
+                                                    [nzDropdownMenu]="latestUploadDropDown">
+                                                    <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
+                                                </a>
+                                                <nz-dropdown-menu #latestUploadDropDown="nzDropdownMenu">
+                                                    <ul nz-menu>
+                                                        <!-- *ngxPermissionsOnly="''" -->
+                                                        <li nz-menu-item [routerLink]="['/voter/view-profile']"
+                                                            [queryParams]="{id:data.id}">
+                                                            <span class="m-l-5">View Voter</span>
+                                                        </li>
+                                                        <li nz-menu-item [routerLink]="['/voter/edit-voter']"
+                                                            [queryParams]="{id:data.id}">
+                                                            <span class="m-l-5">Edit</span>
+                                                        </li>
+                                                        <li nz-menu-item (click)="showModal('slip', data)">
+                                                            <span class="m-l-5">Slip</span>
+                                                        </li>
+                                                        <!-- <li nz-menu-item>
+                                                            <span class="m-l-5">View Benificary</span>
+                                                        </li> -->
+
+                                                        <!-- *ngxPermissionsOnly="'" -->
+
+                                                    </ul>
+                                                </nz-dropdown-menu>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+
+
+                                    <tr [nzExpand]="expandSet.has(data.id)">
+                                        <div class="justify-content-center">
+                                            <nz-page-header class="site-page-header header_bg_dark"
+                                                [nzTitle]="trailTitle">
+                                            </nz-page-header>
+                                            <nz-card class="mb-md-0 border" *ngFor="let item of data?.auditDataset"
+                                                [nzLoading]="_currentAuditId == data.id ? api_loader['accordian'] : null">
+
+                                                <nz-collapse nzAccordion [nzExpandIconPosition]="right">
+                                                    <nz-collapse-panel [nzHeader]="trail_header">
+                                                        <ng-template #trail_header>
+                                                            <h5>Created By: {{item?.created_by}} <span
+                                                                    class="text-muted ml-3 font-size-12 font-weight-normal">({{item?.created_at
+                                                                    | date:'medium'}})</span></h5>
+                                                        </ng-template>
+                                                        <div class="d-flex flex-column mb-2"
+                                                            *ngFor="let sub_sec_audit of item?.key_changes">
+                                                            <h6>{{ sub_sec_audit.key }} content</h6>
+                                                            <div class="d-flex align-items-center">
+                                                                <label class="">{{ sub_sec_audit.key == 'Updated at' ?
+                                                                    (sub_sec_audit.old_value | date:'medium') :
+                                                                    sub_sec_audit.old_value}}</label>
+                                                                <span nz-icon nzType="arrow-right"
+                                                                    class="text-danger mx-3" nzTheme="outline"></span>
+                                                                <label class="mr-3">
+                                                                    {{ sub_sec_audit.key == 'Updated at' ?
+                                                                    (sub_sec_audit.new_value | date:'medium') :
+                                                                    sub_sec_audit.new_value}}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-collapse-panel>
+                                                </nz-collapse>
+
+
+                                            </nz-card>
+                                            <ng-template #trailTitle>
+                                                <div class="ml-md-2">
+                                                    <h5 class="mb-0">
+                                                        <!-- <i nz-icon class="mr-2" nzType="user" nzTheme="outline"></i> -->
+                                                        Audit Trail
+                                                    </h5>
+                                                </div>
+                                            </ng-template>
+                                        </div>
+                                    </tr>
+
+
+
+                                </ng-container>
+                            </tbody>
+                        </nz-table>
+                        <ng-template #botTotalCount>
+                            <div class="font-weight-semibold">
+                                <b>{{total_count}} Results Found </b>
+                            </div>
+                        </ng-template>
+                    </div>
+                </nz-card>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<section *ngIf="quickViewVisible">
+    <nz-drawer [nzWidth]="'300px'" [nzTitle]="filtersTemplate" [nzClosable]="false" [nzVisible]="quickViewVisible"
+        nzPlacement="right" (nzOnClose)="quickViewToggle()">
+
+
+        <section *ngIf="_currToggleActions =='multipleAction' else filters;">
+            <div class="d-flex flex-column">
+                <button nz-button [nzType]="'link'" (click)="createNewFollow('activity'); isActivityModal = true;"
+                    class="border px-3 mx-3 mb-3">Add Activity</button>
+                <button nz-button [nzType]="'link'" (click)="createNewFollow('followUp'); isActivityModal = true;"
+                    class="border px-3 mx-3 mb-3">Add FollowUp</button>
+
+            </div>
+        </section>
+
+        <ng-template #filters>
+            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Booth: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currBooth"
+                            (nzFocus)="searchStaticDataGlobalFunction('Booth')"
+                            (keyup)="searchStaticDataGlobalFunction('Booth',$event)" nzAllowClear
+                            nzPlaceHolder="Select Booth/Ward">
+                            <nz-option *ngIf="isSelectLoader['Booth']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of boothList" [nzValue]="item.id"
+                                [nzLabel]="_currLanguage == 'en' ? (item?.name?.en + (item?.Ward ? '/' + item?.Ward?.name?.en : 'NA')) : item?.name?.hi + (item?.Ward ? '/' + item?.Ward?.name?.hi : 'NA')">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Ward: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currWard"
+                            (nzFocus)="searchStaticDataGlobalFunction('Ward')"
+                            (keyup)="searchStaticDataGlobalFunction('Ward',$event)" nzAllowClear
+                            nzPlaceHolder="Select Ward">
+                            <nz-option *ngIf="isSelectLoader['Ward']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of wardList" [nzValue]="item.id" [nzLabel]="item?.name?.en+'/'+item?.sector?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Sector: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currSector"
+                            (nzFocus)="searchStaticDataGlobalFunction('Sector')"
+                            (keyup)="searchStaticDataGlobalFunction('Sector',$event)" nzAllowClear
+                            nzPlaceHolder="Select Sector">
+                            <nz-option *ngIf="isSelectLoader['Sector']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of sectorList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Zone: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currZone"
+                            (nzFocus)="searchStaticDataGlobalFunction('Zone')"
+                            (keyup)="searchStaticDataGlobalFunction('Zone',$event)" nzAllowClear
+                            nzPlaceHolder="Select Zone">
+                            <nz-option *ngIf="isSelectLoader['Zone']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of zoneList" [nzValue]="item.id"
+                                [nzLabel]="_currLanguage == 'en' ? (item?.name?.en || '-') : (item?.name?.hi || '-')">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Star Voter: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currStarMark"
+                            nzAllowClear
+                            nzPlaceHolder="Select Star">
+                            <nz-option [nzValue]="true"
+                                [nzLabel]="'Star Voter'">
+                            </nz-option>
+                            <nz-option [nzValue]="false"
+                                [nzLabel]="'Not Star Voter'">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Assembly: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_crrAssembly"
+                            (nzFocus)="searchStaticDataGlobalFunction('Assembly')"
+                            (keyup)="searchStaticDataGlobalFunction('Assembly',$event)" nzAllowClear
+                            nzPlaceHolder="Select Assembly">
+                            <nz-option *ngIf="isSelectLoader['Assembly']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of assemblyList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Street: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currStreet"
+                            (nzFocus)="searchStaticDataGlobalFunction('Street')"
+                            (keyup)="searchStaticDataGlobalFunction('Street',$event)" nzAllowClear
+                            nzPlaceHolder="Select Street">
+                            <nz-option *ngIf="isSelectLoader['Street']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of streetList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Lane: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currLane"
+                            (nzFocus)="searchStaticDataGlobalFunction('Lane')"
+                            (keyup)="searchStaticDataGlobalFunction('Lane',$event)" nzAllowClear
+                            nzPlaceHolder="Select Lane">
+                            <nz-option *ngIf="isSelectLoader['Lane']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of laneList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Is Benificary: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currBenificary"
+                            nzAllowClear nzPlaceHolder="Select Is Benificary">
+                            <nz-option [nzValue]="true" [nzLabel]="'True'"> </nz-option>
+                            <nz-option [nzValue]="false" [nzLabel]="'False'"></nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <div class="d-flex justify-content-center mt-5 align-items-center">
+                        <button nz-button nzType="primary" class="mr-3"
+                            (click)="quickViewToggle(); setParams()">Apply</button>
+                        <button nz-button nzType="link" (click)="resetFilter()">Reset</button>
+                    </div>
+                </div>
+                <!-- <button nz-button nzType="link" class="text-primary font-weight-semibold">Clear All</button> -->
+            </div>
+        </ng-template>
+        <!-- <app-quick-view></app-quick-view> -->
+        <ng-template #filtersTemplate>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">{{ _currToggleActions =='multipleAction' ? 'Comment' : 'Filters'}}</h6>
+                <span nz-icon nzType="close-circle" nzTheme="twotone" (click)="quickViewToggle()"></span>
+            </div>
+        </ng-template>
+    </nz-drawer>
+</section>
+
+<!-- currFormType -->
+
+<section *ngIf="isActivityModal">
+    <nz-drawer [nzWidth]="280" height="500" [nzBodyStyle]="{height:'85vh'}" [nzTitle]="null" [nzClosable]="false"
+        [nzVisible]="quickViewVisible" nzPlacement="bottom" (nzOnClose)="quickViewToggle()" [nzHeight]="600">
+        <!-- <app-quick-view></app-quick-view> -->
+        <div class="row mx-3">
+            <div class="col-md-12">
+                <form nz-form [formGroup]="followUpForm">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                    {{_currLanguage == 'en' ? 'Date' : 'तारीख'}}
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please select Date' : 'कृपया तिथि चुनें'">
+                                    <nz-date-picker formControlName="followup_datetime"></nz-date-picker>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+                        <div class="col-md-12" *ngIf="currFormType == 'followUp'">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>Time
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please select Time' : 'कृपया समय चुनें'">
+                                    <nz-input-group>
+                                        <nz-time-picker formControlName="followup_time"></nz-time-picker>
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left">{{_currLanguage == 'en' ? 'Upload Files' : 'फाइलें अपलोड'}}
+                                </nz-form-label>
+                                <!-- <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="'Please select Date'"> -->
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <nz-upload nzListType="text" [nzBeforeUpload]="beforeUploadName"
+                                        [nzMultiple]="true">
+                                        <!-- <p class="ant-upload-text">or</p> -->
+                                        <button class="my-md-4" nz-button nzType="primary">{{_currLanguage == 'en' ? 'Upload' : 'अपलोड'}}</button>
+                                    </nz-upload>
+                                    <div *ngIf="fileList?.length > 0" class="d-flex flex-column mt-3 w-100"
+                                        style=" height: auto; max-height: 10rem; overflow-y: scroll;">
+                                        <div *ngFor="let item of fileList; let i = index"
+                                            class="d-flex justify-content-between text-muted align-items-center px-2">
+                                            <label class="m-2"> {{item?.name}}</label>
+                                            <span nz-icon [nzType]="'delete'" [nzTheme]="'outline'"
+                                                class="text-danger ml-2" (click)="deleteEmployee(i)"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- </nz-form-control> -->
+                            </nz-form-item>
+
+                        </div>
+
+                        <!-- <div class="col-md-12" *ngIf="currFormType == 'activity'">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>Mark Activity
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="Please select your activity!">
+                                    <nz-select nzPlaceHolder="Select Actvity" formControlName="activity_type"
+                                        nzShowSearch nzAllowClear (nzFocus)="getActivityList()" (click)="isDirty= true">
+                                        <nz-option *ngFor="let item of activityList" [nzValue]="item?.id"
+                                            [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                                        </nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div> -->
+
+                        <!-- <div class="col-md-12">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                    {{_currLanguage == 'en' ? 'Task type' : 'कार्य प्रकार'}}
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ?' Please select your Task' : 'कृपया अपना कार्य चुनें'">
+                                    <nz-select [nzPlaceHolder]="_currLanguage == 'en' ? 'Select Task' : 'कार्य चुनें'" formControlName="task_type"
+                                        nzShowSearch nzAllowClear (nzFocus)="getTaskList()" (click)="isDirty= true">
+                                        <nz-option *ngFor="let item of taskList" [nzValue]="item?.id"
+                                            [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                                        </nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div> -->
+
+                        <!-- <div class="col-md-12 mt-5" *ngIf="currFormType == 'followUp'">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>Mark Followup
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="Please select your followup type!">
+                                    <nz-select nzPlaceHolder="Select Follow up" formControlName="followup_type"
+                                        nzShowSearch nzAllowClear (nzFocus)="getFolloupList()" (click)="isDirty= true">
+                                        <nz-option *ngFor="let item of followUpList" [nzValue]="item?.id"
+                                            [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                                        </nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div> -->
+
+                        <div class="col-md-12">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                    {{_currLanguage == 'en' ? 'Comments' : 'टिप्पणियाँ'}}
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please enter comments!' : 'कृपया टिप्पणियाँ दर्ज करें!'">
+                                    <textarea rows="4" nz-input formControlName="comments"
+                                        [placeholder]="_currLanguage == 'en' ? 'Enter Comments' : 'टिप्पणियाँ दर्ज करें'"></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <!-- <div class="col-md-12" *ngIf="isEdit">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left">Customer Code
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="Please check your customer code!">
+                                    <input type="text" [readonly]="true" nz-input formControlName="firm_code"
+                                        placeholder="Customer Code" (change)="isDirty= true" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div> -->
+                        <div class="col-md-12">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" [nzNoColon]="true">
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="16" [nzXs]="24">
+                                    <button nz-button class="login-form-button font-size-16 font-weight-semibold px-5"
+                                        [nzType]="'primary'" [disabled]="followUpForm.invalid ? true : false" nzBlock
+                                        [nzLoading]="api_loader['button_markActivity']" nzSize="large" style="max-width: 30rem;"
+                                        (click)="submitForm(loginForm)"
+                                    >
+                                        {{_currLanguage == 'en' ? 'Submit' : 'दर्ज करना'}}
+                                    </button>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <ng-template #filtersTemplate>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Filters</h6>
+                <!-- <button nz-button nzType="link" class="text-primary font-weight-semibold">Clear All</button> -->
+            </div>
+        </ng-template>
+    </nz-drawer>
+</section>
+
+<!-- slip modal view -->
+<section *ngIf="modalTitle == 'slip'">
+    <nz-modal 
+        [(nzVisible)]="isVisible" nzTitle="Slip" (nzOnCancel)="handleClose()"
+        (nzOnOk)="handleClose()"
+        [nzFooter]="null"
+        nzWidth="500px"
+    >
+        <ng-container *nzModalContent>
+            <!-- <div class="d-flex justify-content-center mb-2">
+                <button nz-button (click)="global.print()" class="bg-primary text-white">
+                    Print
+                    <span nz-icon nzType="printer" nzTheme="outline"></span>
+                </button>
+            </div> -->
+            <div id="doc" class="row w-100 p-3">
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <img [src]="global.domainUser.account_logo || '../.././../assets/images/avatars/default.png'" alt="" width="250px">
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        उम्मीदवार:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == 'en' ? global?.domainUser?.candidate_name?.en || '-' : global?.domainUser?.candidate_name?.hi || '-'}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        पक्ष:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == 'en' ? global?.domainUser?.party_name?.en || '-' : global?.domainUser?.party_name?.hi || '-'}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        चुनाव चिह्न:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == 'en' ? global?.domainUser?.election_symbol?.en || '-' : global?.domainUser?.election_symbol?.hi || '-'}} 
+                    </span>
+                    <span>
+                        <img [src]="global?.domainUser?.party_icon" width="30px"/>
+                    </span>
+                </div>
+                <div class="col-4">
+                    <span>
+                        विधानसभा:
+                    </span>
+                </div>
+                <div class="col-8 ">
+                    <span>
+                        {{_currLanguage == 'en' ? global?.domainUser?.name?.en || '-' : global?.domainUser?.name?.hi || '-'}}
+                    </span>
+                </div>
+                <div class="col-12">
+                    <nz-divider></nz-divider>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        नाम:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.full_name_en || '-') : ( voterInfo?.full_name_hi || '-')}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        इपिक नंबर:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.epic_no || '-') : ( voterInfo?.epic_no || '-')}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        आयु:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.age || '-') : ( voterInfo?.age || '-')}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        मतदाता कार्ड:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.id || '-') : ( voterInfo?.id || '-')}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        घर नंबर:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.house_no || '-') : ( voterInfo?.house_no || '-')}}
+                    </span>
+                </div>
+                <div class="col-4 mb-2">
+                    <span>
+                        बूथ नंबर:
+                    </span>
+                </div>
+                <div class="col-8 mb-2">
+                    <span>
+                        {{_currLanguage == "en" ? (voterInfo?.booth || '-') : ( voterInfo?.booth || '-')}}
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+                <button nz-button (click)="global.print()" class="bg-primary text-white">
+                    Print
+                    <span nz-icon nzType="printer" nzTheme="outline"></span>
+                </button>
+            </div>
+        </ng-container>
+    </nz-modal>
+</section>
+
+<section *ngIf="isRatingDrawer">
+    <nz-drawer [nzWidth]="300" [nzBodyStyle]="{height:'50vh'}" [nzTitle]="null" [nzClosable]="false"
+        [nzVisible]="isRatingDrawer" nzPlacement="bottom" (nzOnClose)="isRatingDrawer = false">
+        <div class="d-flex justify-content-center flex-column">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-6 mb-3">
+                <h6>Rate Voter</h6>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mx-auto">
+                <div class="d-flex flex-column">
+                    <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="rating_type"
+                            [nzPlaceHolder]="_currLanguage == 'en' ? 'Select type' : 'प्रकार चुनें'">
+                            <nz-option
+                                [nzValue]="'CANDIDATE'"
+                                [nzLabel]="_currLanguage == 'en' ? 'CANDIDATE' : 'उम्मीदवार'">
+                            </nz-option>
+                            <nz-option
+                                [nzValue]="'POLITICAL PARTY'"
+                                [nzLabel]="_currLanguage == 'en' ? 'POLITICAL PARTY': 'राजनीतिक दल'">
+                            </nz-option>
+                        </nz-select>
+                </div>
+                <div class="d-flex flex-column">
+                    <nz-slider [(ngModel)]="rating" [nzMarks]="marks" [nzMin]="1" [nzMax]="5"
+                        [nzTipFormatter]="formatter"></nz-slider>
+                    <label for="" class="mb-3"> {{(rating || '1')+'/5' }} <span class="font-size-12 text-primary">{{( rating
+                            ? ' (' +
+                            formatter(rating) + ')': '')}}</span> </label>
+                    <button class="mx-3 align-self-center mb-2" nz-button nzType="primary" style="max-width: 18rem;"
+                        (click)="rateVoter()" nzBlock [nzLoading]="isRating"
+                    >Submit</button>
+                    <button class="mx-3 align-self-center border" nz-button nzType="link" style="max-width: 18rem;"
+                        (click)="isRatingDrawer = false" nzBlock>Cancel</button>
+                </div>
+            </div>
+            <!-- <div class=" col-lg-4">
+                <nz-slider [(ngModel)]="rating" [nzMarks]="marks" [nzMin]="1" [nzMax]="5"
+                    [nzTipFormatter]="formatter"></nz-slider>
+                <label for=""> {{rating+'/5' }} <span class="font-size-12 text-primary">{{( rating ? ' (' +
+                        formatter(rating) + ')': '')}}</span> </label>
+            </div>
+            <div class="col-md-4 mt-5">
+               <div>
+                <button nz-button nzType="primary" (click)="rateVoter()" [nzLoading]="api_loading['btn_Rating']"
+                nzBlock>Submit</button>
+               </div>
+            </div> -->
+        </div>
+    </nz-drawer>
+</section>
+
+<section *ngIf="modalTitle === 'mobile'">
+    <nz-modal [(nzVisible)]="isVisible" [nzTitle]="'Mobile Number'" [nzFooter]="null"
+		(nzOnCancel)="handleClose()"
+    >
+		<ng-container *nzModalContent>
+            <form [formGroup]="mobileForm" class="row">
+                <div class="col-12 mb-3">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="8" [nzXs]="24" class="text-left d-flex justify-content-start">
+                            <span>
+                                {{_currLanguage == 'en' ?
+                            'Mobile Number' : 'मोबाइल नंबर'}}   
+                            </span>
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="16" [nzXs]="24"
+                            [nzErrorTip]="facebookError">
+                            <input type="text"  nz-input formControlName="mobile"
+                                [placeholder]="_currLanguage == 'en' ? 'Add Mobile Number' : 'मोबाइल नंबर डालें'" class="w-100"/>
+                            <ng-template #facebookError let-control>
+                                <ng-container *ngIf="control.hasError('required')">
+                                    {{_currLanguage == 'en' ? 'Please enter mobile number' : 'कृपया मोबाइल नंबर दर्ज करें'}}
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('pattern')">
+                                    {{_currLanguage == 'en' ? 'Please enter a valid mobile number' : 'कृपया एक वैध मोबाइल नंबर दर्ज करें'}}
+                                </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div class="col-12">
+                    <nz-form-item>
+                        <nz-form-label [nzNoColon]="true" [nzSm]="8" [nzXs]="24" class="text-left d-flex justify-content-end"></nz-form-label>
+                        <nz-form-control [nzSm]="16" [nzXs]="24">
+                            <button
+                                (click)="handleClose()"
+                                nzType="link"
+                                nz-button
+                                class="text-primary border"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                (click)="editMobileNumber()"
+                                nzType="primary"
+                                nz-button
+                                class="text-white bg-primary ml-2"
+                                [nzLoading]="isMobile"
+                            >
+                                Save
+                            </button>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</section>

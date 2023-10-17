@@ -1,0 +1,675 @@
+<nz-card [nzLoading]="api_loading['card']">
+    <section>
+        <main>
+            <div class="d-flex justify-content-between p-3 mt-2">
+                <div class="d-flex">
+                    <!-- <img nzIcon="user" width="80" height="80" class="mr-3 rounded-circle"
+                        [src]="'../.././../assets/images/avatars/default.png'"> -->
+                    <div class="d-flex flex-column">
+                        <h6 class="text-dark font-size-16">{{_currLanguage == "en" ? (voterDetails?.full_name_en || '-') : (voterDetails?.full_name_hi || '-')}}
+                            <!-- {{_currLanguage == 'en' ? item?.full_name_en : item?.full_name_hi}} -->
+                        </h6>
+                        <label class="text-primary mb-2">
+                            <!-- Voter ID :  -->
+                            {{_currLanguage == 'en' ? voterDetails?.epic_no :
+                            voterDetails?.epic_no}}</label>
+                        <div class="d-flex flex-wrap mt-3">
+                            <!-- <label class="text-primary mb-2 mr-3">Rating : </label> -->
+                            <nz-tag [nzColor]="'purple'" class="border text-primary text-center align-self-start">
+                                <span nz-icon [nzType]="'star'" *ngIf="voterDetails?.rating" [nzTheme]="'fill'"
+                                    class="text-warning mr-2"></span>
+                                {{voterDetails?.rating ? voterDetails?.rating + '/5': 'No Rating'}}
+
+                            </nz-tag>
+                            <label *ngIf="voterDetails?.rating" class="font-size-12 mt-1"
+                                [ngClass]="voterDetails?.rating > 3 ? 'text-success' : (voterDetails?.rating < 3 ? 'text-danger' : 'text-secondary') ">{{
+                                ' ('+ formatter(voterDetails?.rating) + ') - (' +(voterDetails?.rating_type !== 'null' ? voterDetails?.rating_type : '-') + ')'}}</label>
+                        </div>
+                    </div>
+                    <!-- <div class="d-lg-none d-flex">
+                        <a nz-dropdown [nzDropdownMenu]="menu" class="selectFilter2">
+                            Actions
+                            <span nz-icon nzType="down"></span>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <ul nz-menu nzSelectable>
+                                <li nz-menu-item><button nz-button nzType="link" class="border mr-3"
+                                        (click)="rating = voterDetails?.rating;isRatingDrawer = true"
+                                        nzSize="small">Rate Now</button></li>
+                                <li nz-menu-item><button nz-button nzType="link" class="d-flex align-items-center"
+                                        style="border: 1px solid #3C0480;" (click)="createVoterProfileForm()"
+                                        routerLink="/voter/edit-voter" [queryParams]="{id:_currVoterId}" nzSize="small">
+                                        <span nz-icon nzType="form" nzTheme="outline" class="mr-2"></span> Edit</button>
+                                </li>
+                            </ul>
+                        </nz-dropdown-menu>
+                    </div> -->
+                </div>
+                <div class="d-lg-flex justify-content-end mb-2 display-none-768px">
+                    <button nz-button nzType="link" class="border mb-2 mr-2"
+                        (click)="rating = voterDetails?.rating;isRatingDrawer = true" nzSize="small">Rate Now</button>
+                    <button nz-button nzType="link" class="" style="border: 1px solid #3C0480;"
+                        (click)="createVoterProfileForm()" routerLink="/voter/edit-voter"
+                        [queryParams]="{id:_currVoterId}" nzSize="small">
+                        <span nz-icon nzType="form" nzTheme="outline" class="mr-2"></span> Edit</button>
+                </div>
+                <div class="row rating_edit mb-2 display-768px">
+                    <div class="col-12 d-flex">
+                        <button nz-button nzType="link" class="border mr-3 mb-2"
+                        (click)="rating = voterDetails?.rating;isRatingDrawer = true" nzSize="small">Rate Now</button>
+                    </div>
+                    <div class="col-12">
+                        <button nz-button nzType="link" class="d-flex justify-content-end" style="border: 1px solid #3C0480;"
+                        (click)="createVoterProfileForm()" routerLink="/voter/edit-voter"
+                        [queryParams]="{id:_currVoterId}" nzSize="small">
+                        <span nz-icon nzType="form" nzTheme="outline" class=""></span> Edit</button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-lg-flex display-none-768px">
+                <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3"
+                    (click)=" createNewFollow('activity')">{{_currLanguage === 'en' ? 'Add Comment' : 'टिप्पणी डालो'}}</button>
+                <!-- <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3">Communicate</button> -->
+                <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3"
+                    (click)=" createNewFollow('followUp')">
+                    {{_currLanguage === 'en' ? 'Follow Up' : 'फॉलो अप'}}
+                </button>
+                <button 
+                    (click)="showModal('facebook')"
+                    nz-button nzType="primary" nzSize="small" class="mb-3 mr-3"
+                >
+                    {{_currLanguage === 'en' ? 'Facebook' : 'फेसबुक'}}
+                    <span nz-icon nzType="facebook" nzTheme="outline"></span>
+                </button>
+            </div>
+            <div class="display-768px">
+                <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3 w-100"
+                    (click)=" createNewFollow('activity')">
+                    {{_currLanguage === 'en' ? 'Add Comment' : 'टिप्पणी डालो'}}
+                </button>
+                <!-- <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3">Communicate</button> -->
+                <button nz-button nzType="primary" nzSize="small" class="mb-3 mr-3 w-100"
+                    (click)=" createNewFollow('followUp')">
+                    {{_currLanguage === 'en' ? 'Follow Up' : 'फॉलो अप'}}
+                </button>
+                <button 
+                    (click)="showModal('facebook')"
+                    nz-button nzType="primary" nzSize="small" class="mb-3 mr-3 w-100"
+                >
+                    {{_currLanguage === 'en' ? 'Facebook' : 'फेसबुक'}} <span nz-icon nzType="facebook" nzTheme="outline"></span>
+                </button>
+            </div>
+            
+        </main>
+    </section>
+
+    <section>
+        <div>
+            <nz-tabset [nzTabPosition]="'top'" [(nzSelectedIndex)]="_currTabName"
+                (nzSelectChange)="onTabChange($event)">
+                <nz-tab class="text-gray" *ngFor="let tab of partyTabs" [nzDisabled]="isEdit ? true : false"
+                    [nzTitle]="tabName" [nzForceRender]="'true'">
+                    <ng-template #tabName>
+                        <h6>{{tab?.name}}</h6>
+                    </ng-template>
+                    <section *ngIf="_currTabName == 0">
+                        <ng-container *ngFor="let item of profileLogs; let i = index;">
+                            <div class="row" *ngIf="i == 0">
+                                <div class="col-lg-6 col-12 my-3" *ngFor="let item of profileLogs; let i = index;">
+                                    <div class="d-flex align-items-center w-100">
+                                        <img [src]="item?.icon" alt="" class="mr-3">
+                                        <div class="d-flex flex-column">
+                                            <label>{{item?.title}}</label>
+                                            <h6 class="mb-0">{{item?.value}}</h6>
+                                        </div>
+
+                                    </div>
+                                    <h4 *ngIf="i == profileLogs.length -1">Political Details</h4>
+                                    <nz-divider class="my-2"></nz-divider>
+                                </div>
+                            </div>
+                            <!-- Political Data -->
+                            <div class="row">
+                                <div class="col-lg-6 col-12 my-3" *ngFor="let item of item?.politicalList">
+                                    <div class="d-flex align-items-center w-100">
+                                        <img [src]="item?.icon" alt="" class="mr-3">
+                                        <div class="d-flex flex-column">
+                                            <label>{{item?.title ? item?.title: '--'}}</label>
+                                            <h6 class="mb-0">{{item?.value ? item?.value : '--'}}</h6>
+                                        </div>
+
+                                    </div>
+                                    <nz-divider class="my-2"></nz-divider>
+                                </div>
+                                <!-- <div class="col-md-12 my-3">
+                                    <nz-card class="shadow-sm border">
+                                        <div class="d-flex">
+                                            <h5>Comments</h5>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="d-flex flex-column">
+                                                    <h6 class="mb-2 text-primary">Shreya</h6>
+                                                    <label class="py-2 text-left"
+                                                        style="background-color: rgb(238, 238, 238); padding-inline:2rem ;">Hii</label>
+                                                    <label class="font-size-12 text-muted">03/01/2022 : 11:29 am</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-6">
+                                                <div class="d-flex flex-column my-3">
+                                                    <label class="py-2 text-right"
+                                                        style="background-color: rgb(238, 238, 238); padding-inline:2rem ;">Lorem
+                                                        ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                                        tempor
+                                                        incididunt ut labore et dolore magna aliqua.
+                                                    </label>
+                                                    <label class="font-size-12 text-muted text-right">03/01/2022 : 11:29
+                                                        am</label>
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                    </nz-card>
+                                </div> -->
+                            </div>
+                        </ng-container>
+
+                    </section>
+
+
+                    <!-- Activity -->
+                    <section *ngIf="_currTabName == 1">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- <nz-card>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex flex-column">
+                                            <h6>Voter Rating</h6>
+                                            <label for="">
+                                                <span nz-icon [nzType]="'star'" [nzTheme]="'fill'"
+                                                    class="text-warning mr-2"></span>{{voterDetails?.rating ?
+                                                voterDetails?.rating : 'No Rating'}}
+                                            </label>
+                                        </div>
+                                        <div class="">
+                                            <button nz-button nzType="link" class="border" 
+                                                (click)="rating = voterDetails?.rating;isRatingDrawer = true">Rate Now</button>
+                                        </div>
+                                    </div>
+                                </nz-card> -->
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <nz-card [nzLoading]="api_loading['cardActvity']" nzTitle="Activity Information">
+                                    
+                                    <div>
+                                        <nz-card *ngFor="let item of listOfActivity" class="cardBorder p-0">
+                                            <h5>{{_currLanguage == 'en' ? item?.activity_type?.name?.en :
+                                                item?.activity_type?.name?.hi}}</h5>
+                                            <nz-steps [nzProgressDot]="true" [nzCurrent]="1" nzDirection="vertical">
+                                                <nz-step [nzTitle]="titleTemplate"
+                                                    [nzDescription]="descriptionTemplate">
+                                                </nz-step>
+                                            </nz-steps>
+
+                                            <ng-template #descriptionTemplate>
+                                                <div class="d-flex justify-content-between">
+                                                </div>
+                                            </ng-template>
+
+                                            <ng-template #titleTemplate>
+                                                <div class="d-flex justify-content-between">
+                                                    <label class="m-0 font-size-16 font-weight-semibold"
+                                                        nz-dropdown
+                                                        [nzDropdownMenu]="latestUploadDropDown">{{item.created_by?.first_name + ' '
+                                                        + item.created_by?.last_name }}
+                                                        <span nz-icon nzType="down" nzTheme="outline"
+                                                            class="ml-2"></span>
+                                                    </label>
+
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-3 d-flex flex-column mb-3">
+                                                        <h6>Created At</h6>
+                                                        <label class="font-size-14 mr-3">{{item?.created_at |
+                                                            date:'medium'
+                                                            }}</label>
+                                                    </div>
+                                                    <div class="col-md-3 d-flex flex-column mb-3">
+                                                        <h6>Updated At</h6>
+                                                        <label class="font-size-14 mr-3">{{item?.updated_at
+                                                            | date:'medium'
+                                                            }}</label>
+                                                    </div>
+                                                    <div class="col-md-3 d-flex flex-column mb-3">
+                                                        <h6>Activity Date</h6>
+                                                        <label class="font-size-14 mr-3">{{item?.activity_date
+                                                            }}</label>
+                                                    </div>
+                                                    <div class="col-md-3 d-flex">
+                                                        <button nz-button nzType="link" class="border" nzSize="small"
+                                                            (click)="createNewFollow('activity',item)">
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <nz-dropdown-menu #latestUploadDropDown="nzDropdownMenu">
+                                                    <ul nz-menu nzSelectable>
+                                                        <li nz-menu-item>{{_currLanguage == 'en' ?
+                                                            item?.comments?.en : item?.comments?.hi}}</li>
+                                                    </ul>
+                                                </nz-dropdown-menu>
+                                            </ng-template>
+                                        </nz-card>
+                                    </div>
+
+                                </nz-card>
+                            </div>
+
+                            <div class="col-md-12">
+                                <nz-card [nzLoading]="api_loading['cardFollowup']" nzTitle="Follow up Information">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- <nz-card class="cardBorder my-3"> -->
+                                            <!-- <div class="d-block d-lg-none">
+                                                <nz-table #rowSelectionTable [nzData]="followUpList"
+                                                    [nzTotal]="followUpList.length" [nzFrontPagination]="false"
+                                                    [nzShowSizeChanger]="false" [nzScroll]="{ x: '1000px', y: '50vh' }">
+                                                    <thead>
+                                                        <tr>
+                                                            <th nzWidth="4rem">Sr. No</th>
+                                                            <th class="text-left">Followup Type</th>
+                                                            <th>Time Stamp</th>
+                                                            <th>Created By</th>
+                                                            <th>Comments</th>
+                                                            <th nzRight>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <ng-container *ngFor="let data of followUpList; index as i">
+                                                            <tr>
+                                                                <td nzWidth="4rem">{{i+1}}</td>
+                                                                <td class="text-left">{{_currLanguage == 'en' ?
+                                                                    data?.followup_type?.name?.en
+                                                                    : data?.followup_type?.name?.hi}}</td>
+                                                                <td class="text-left">{{data?.followup_datetime |
+                                                                    date:'medium'}} </td>
+                                                                <td>
+                                                                    <div class="d-flex flex-column">
+                                                                        <label>
+                                                                            {{_currLanguage == 'en' ?
+                                                                            data?.created_by?.first_name +
+                                                                            data?.created_by?.last_name :
+                                                                            data?.created_by?.first_name +
+                                                                            data?.created_by?.last_name}}
+                                                                        </label>
+                                                                        <label>
+                                                                            {{_currLanguage == 'en' ?
+                                                                            data?.created_by?.mobile :
+                                                                            data?.created_by?.mobile}}
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{_currLanguage == 'en' ?
+                                                                    data?.comments?.en : data?.comments?.hi}}</td>
+                                                                <td nzRight><button nz-button nzType="link"
+                                                                        clas="border"
+                                                                        (click)="createNewFollow('followUp',data)">Edit</button>
+                                                                </td>
+                                                            </tr>
+                                                        </ng-container>
+                                                    </tbody>
+                                                </nz-table>
+                                            </div> -->
+
+
+                                            <div>
+                                                <nz-card *ngFor="let item of followUpList" class="cardBorder p-0">
+                                                    <h5>{{_currLanguage == 'en' ? item?.followup_type?.name?.en :
+                                                        item?.followup_type?.name?.hi}}</h5>
+                                                    <nz-steps [nzProgressDot]="true" [nzCurrent]="1"
+                                                        nzDirection="vertical">
+                                                        <nz-step [nzTitle]="titleTemplate"
+                                                            [nzDescription]="descriptionTemplate">
+                                                        </nz-step>
+                                                    </nz-steps>
+
+                                                    <ng-template #descriptionTemplate>
+                                                        <div class="d-flex justify-content-between">
+                                                        </div>
+                                                    </ng-template>
+
+                                                    <ng-template #titleTemplate>
+                                                        <div class="d-flex justify-content-between">
+                                                            <label class="m-0 font-size-16 font-weight-semibold"
+                                                                nz-dropdown
+                                                                [nzDropdownMenu]="latestUploadDropDown">{{item.created_by?.first_name + ' '
+                                                                + item.created_by?.last_name }}
+                                                                <span nz-icon nzType="down" nzTheme="outline"
+                                                                    class="ml-2"></span>
+                                                            </label>
+
+                                                        </div>
+                                                        <div class="row mt-3">
+                                                            <div class="col-md-3 d-flex flex-column mb-3">
+                                                                <h6>Created At</h6>
+                                                                <label class="font-size-14 mr-3">{{item?.created_at
+                                                                    | date:'medium'
+                                                                    }}</label>
+                                                            </div>
+                                                            <div class="col-md-3 d-flex flex-column mb-3">
+                                                                <h6>Updated At</h6>
+                                                                <label class="font-size-14 mr-3">{{item?.updated_at
+                                                                    | date:'medium'
+                                                                    }}</label>
+                                                            </div>
+                                                            <div class="col-md-3 d-flex flex-column mb-3">
+                                                                <h6>Followup Date</h6>
+                                                                <label
+                                                                    class="font-size-14 mr-3">{{item?.followup_datetime
+                                                                    | date:'medium'
+                                                                    }}</label>
+                                                            </div>
+                                                            <div class="col-md-3 d-flex">
+                                                                <button nz-button nzType="link" class="border ml-auto mr-auto"
+                                                                nzSize="small"
+                                                                (click)="createNewFollow('followUp',item)">
+                                                                Edit
+                                                            </button>
+                                                            </div>
+                                                            
+                                                        </div>
+
+                                                        <nz-dropdown-menu #latestUploadDropDown="nzDropdownMenu">
+                                                            <ul nz-menu nzSelectable>
+                                                                <li nz-menu-item>{{_currLanguage == 'en' ?
+                                                                    item?.comments?.en : item?.comments?.hi}}</li>
+                                                            </ul>
+                                                        </nz-dropdown-menu>
+                                                    </ng-template>
+                                                </nz-card>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </nz-card>
+                            </div>
+                        </div>
+
+                    </section>
+
+
+                    <!-- Primary Attribute -->
+                    <section *ngIf="_currTabName == 2">
+                        <app-primary-attributes [voterId]="_currVoterId"
+                            [attributeList]="attributeList"></app-primary-attributes>
+                    </section>
+
+                    <!-- Relationship -->
+                    <section *ngIf="_currTabName == 3">
+                        <app-relationship-mapping [voterId]="_currVoterId"></app-relationship-mapping>
+                    </section>
+
+                </nz-tab>
+            </nz-tabset>
+        </div>
+    </section>
+
+
+    <section *ngIf="quickViewVisible">
+        <nz-drawer [nzWidth]="280" height="500" [nzBodyStyle]="{height:'85vh'}" [nzTitle]="null" [nzClosable]="false"
+            [nzVisible]="quickViewVisible" nzPlacement="bottom" (nzOnClose)="callMultipleAPI();quickViewToggle()"
+            [nzHeight]="600">
+            <!-- <app-quick-view></app-quick-view> -->
+            <div class="row mx-3">
+                <div class="col-md-12">
+                    <form nz-form [formGroup]="followUpForm">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                        {{_currLanguage == 'en' ? 'Date' : 'तारीख'}}
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please select Date' : 'कृपया दिनांक चुनें'">
+                                        <nz-date-picker formControlName="followup_datetime"
+                                            [nzPlaceHolder]="_currLanguage == 'en' ? 'Select Date':'तारीख़ चुनें'"
+                                        ></nz-date-picker>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+
+                            <div class="col-md-12" *ngIf="currFormType == 'followUp'">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                        {{_currLanguage == 'en' ? 'Time' : 'समय'}}
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please select time' : 'कृपया समय चुनें'">
+                                        <nz-input-group>
+                                            <nz-time-picker [nzFormat]="'HH:mm:ss'"
+                                                formControlName="followup_time"
+                                                [nzPlaceHolder]="_currLanguage == 'en' ? 'Select Time':'समय चुनें'"    
+                                            ></nz-time-picker>
+                                        </nz-input-group>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+
+
+                            <div class="col-md-12">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left">
+                                        {{_currLanguage == 'en' ? 'Upload Files' : 'फ़ाइल अपलोड करें'}}
+                                    </nz-form-label>
+                                    <!-- <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="'Please select Date'"> -->
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <nz-upload nzListType="text" [nzBeforeUpload]="beforeUploadName"
+                                            [nzMultiple]="true">
+                                            <!-- <p class="ant-upload-text">or</p> -->
+                                            <button class="my-md-4" nz-button nzType="primary">
+                                                {{_currLanguage == 'en' ? 'Upload': 'फ़ाइल'}}
+                                            </button>
+                                        </nz-upload>
+                                        <div *ngIf="fileList?.length > 0" class="d-flex flex-column mt-3 w-100"
+                                            style=" height: auto; max-height: 10rem; overflow-y: scroll;">
+                                            <div *ngFor="let item of fileList; let i = index"
+                                                class="d-flex justify-content-between text-muted align-items-center px-2">
+                                                <label class="m-2"> {{item?.name}}</label>
+                                                <span nz-icon [nzType]="'delete'" [nzTheme]="'outline'"
+                                                    class="text-danger ml-2" (click)="deleteEmployee(i)"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- </nz-form-control> -->
+                                </nz-form-item>
+
+                            </div>
+
+
+
+                            <!-- <div class="col-md-12" *ngIf="currFormType == 'activity'">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                        {{_currLanguage == 'en' ? 'Task type' : 'कार्य का प्रकार'}}
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ?  'Please select your task!' : 'कृपया अपना कार्य चुनें!'">
+                                        <nz-select [nzPlaceHolder]="_currLanguage == 'en' ? 'Select Task': 'कार्य चुनें'" formControlName="task_type"
+                                            nzShowSearch nzAllowClear (nzFocus)="getTaskList()"
+                                            (click)="isDirty= true">
+                                            <nz-option *ngFor="let item of taskList" [nzValue]="item?.id"
+                                                [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                                            </nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div> -->
+
+                            <div class="col-md-12 mt-5" *ngIf="currFormType == 'followUp'">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                        {{_currLanguage == 'en' ? 'Task type' : 'कार्य का प्रकार'}}
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24"
+                                        [nzErrorTip]="_currLanguage == 'en' ? 'Please select your followup type!': 'कृपया अपना फॉलोअप प्रकार चुनें!'">
+                                        <nz-select [nzPlaceHolder]="_currLanguage == 'en' ? 'Select Follow up': 'फ़ॉलो अप चुनें'" formControlName="task_type"
+                                            nzShowSearch nzAllowClear (nzFocus)="getFolloupList()"
+                                            (click)="isDirty= true">
+                                            <nz-option *ngFor="let item of taskList" [nzValue]="item?.id"
+                                                [nzLabel]="_currLanguage == 'en' ? item?.name?.en : item?.name?.hi">
+                                            </nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+
+                            <div class="col-md-12">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left" nzRequired>
+                                        {{_currLanguage == 'en' ? 'Comments' : 'टिप्पणियाँ'}}
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24" [nzErrorTip]="_currLanguage == 'en' ? 'Please enter comments!' : 'कृपया टिप्पणियाँ दर्ज करें!'">
+                                        <textarea rows="4" nz-input formControlName="comments"
+                                            [placeholder]="_currLanguage == 'en' ? 'Enter Comments' : 'टिप्पणी दर्ज करें'"></textarea>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <!-- <div class="col-md-12" *ngIf="isEdit">
+                                <nz-form-item>
+                                    <nz-form-label [nzSm]="8" [nzXs]="24" class=" text-left">Customer Code
+                                    </nz-form-label>
+                                    <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="Please check your customer code!">
+                                        <input type="text" [readonly]="true" nz-input formControlName="firm_code"
+                                            placeholder="Customer Code" (change)="isDirty= true" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div> -->
+
+                        </div>
+                    </form>
+                    <div class="d-flex justify-content-center">
+                        <button nz-button class="login-form-button font-size-16 font-weight-semibold px-5"
+                            [nzType]="'primary'" [disabled]="followUpForm.invalid ? true : false" nzBlock
+                            [nzLoading]="api_loading['button_markActivity']" nzSize="large" style="max-width: 30rem;"
+                            (click)="submitForm(loginForm)">{{_currLanguage == 'en' ? 'Submit' : 'दर्ज करना'}}</button>
+                    </div>
+                </div>
+            </div>
+            <ng-template #filtersTemplate>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Filters</h6>
+                    <!-- <button nz-button nzType="link" class="text-primary font-weight-semibold">Clear All</button> -->
+                </div>
+            </ng-template>
+        </nz-drawer>
+    </section>
+    <section *ngIf="isRatingDrawer">
+        <nz-drawer [nzWidth]="300" [nzBodyStyle]="{height:'50vh'}" [nzTitle]="null" [nzClosable]="false"
+            [nzVisible]="isRatingDrawer" nzPlacement="bottom" (nzOnClose)="isRatingDrawer = false">
+            <div class="d-flex justify-content-center flex-column">
+
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-6 mb-3">
+                    <h6>Rate Voter</h6>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 mx-auto">
+                    <div class="d-flex flex-column">
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="rating_type" nzAllowClear
+                                [nzPlaceHolder]="_currLanguage == 'en' ? 'Select type' : 'प्रकार चुनें'">
+                                <nz-option
+                                    [nzValue]="'CANDIDATE'"
+                                    [nzLabel]="_currLanguage == 'en' ? 'CANDIDATE' : 'उम्मीदवार'">
+                                </nz-option>
+                                <nz-option
+                                    [nzValue]="'POLITICAL PARTY'"
+                                    [nzLabel]="_currLanguage == 'en' ? 'POLITICAL PARTY': 'राजनीतिक दल'">
+                                </nz-option>
+                            </nz-select>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <nz-slider [(ngModel)]="rating" [nzMarks]="marks" [nzMin]="1" [nzMax]="5"
+                            [nzTipFormatter]="formatter"></nz-slider>
+                        <label for="" class="mb-3"> {{(rating || '1')+'/5' }} <span class="font-size-12 text-primary">{{( rating
+                                ? ' (' +
+                                formatter(rating) + ')': '')}}</span> </label>
+                        <button class="mx-3 align-self-center" nz-button nzType="primary" style="max-width: 18rem;"
+                            (click)="rateVoter()" [nzLoading]="api_loading['btn_Rating']" nzBlock>Submit</button>
+                    </div>
+                </div>
+                <!-- <div class=" col-lg-4">
+                    <nz-slider [(ngModel)]="rating" [nzMarks]="marks" [nzMin]="1" [nzMax]="5"
+                        [nzTipFormatter]="formatter"></nz-slider>
+                    <label for=""> {{rating+'/5' }} <span class="font-size-12 text-primary">{{( rating ? ' (' +
+                            formatter(rating) + ')': '')}}</span> </label>
+                </div>
+                <div class="col-md-4 mt-5">
+                   <div>
+                    <button nz-button nzType="primary" (click)="rateVoter()" [nzLoading]="api_loading['btn_Rating']"
+                    nzBlock>Submit</button>
+                   </div>
+                </div> -->
+            </div>
+        </nz-drawer>
+    </section>
+</nz-card>
+
+<section *ngIf="modalTitle === 'facebook'">
+    <nz-modal [(nzVisible)]="isVisible" [nzTitle]="'Facebook link'" [nzFooter]="null"
+		(nzOnCancel)="handleCancel()"
+    >
+		<ng-container *nzModalContent>
+            <form [formGroup]="facebookForm" class="row">
+                <div class="col-12 mb-3">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="8" [nzXs]="24" class="text-left d-flex justify-content-start">
+                            <span>
+                                {{_currLanguage == 'en' ?
+                            'Facebook link' : 'फेसबुक लिंक'}}   
+                            </span>
+                        </nz-form-label>
+                        <nz-form-control [nzSm]="16" [nzXs]="24"
+                            [nzErrorTip]="facebookError">
+                            <input type="text"  nz-input formControlName="facebook_link"
+                                [placeholder]="_currLanguage == 'en' ? 'Add facebook link' : 'फेसबुक लिंक डालो'" class="w-100"/>
+                            <ng-template #facebookError let-control>
+                                <ng-container *ngIf="control.hasError('required')">
+                                    {{_currLanguage == 'en' ? 'Please enter facebook link' : 'कृपया फेसबुक लिंक दर्ज करें'}}
+                                </ng-container>
+                                <ng-container *ngIf="control.hasError('pattern')">
+                                    {{_currLanguage == 'en' ? 'Please enter a valid facebook link' : 'कृपया एक वैध फेसबुक लिंक दर्ज करें'}}
+                                </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div class="col-12">
+                    <nz-form-item>
+                        <nz-form-label [nzNoColon]="true" [nzSm]="8" [nzXs]="24" class="text-left d-flex justify-content-end"></nz-form-label>
+                        <nz-form-control [nzSm]="16" [nzXs]="24">
+                            <button
+                                (click)="handleCancel()"
+                                nzType="link"
+                                nz-button
+                                class="text-primary border"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                [disabled]="facebookForm?.invalid"
+                                (click)="putVoterFacebookLink()"
+                                [nzLoading]="isFacebook"
+                                nzType="primary"
+                                nz-button
+                                class="text-white bg-primary ml-2"
+                            >
+                                Save
+                            </button>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</section>

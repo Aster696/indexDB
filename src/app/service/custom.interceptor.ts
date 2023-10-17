@@ -1,4 +1,4 @@
-// import { HttpService } from 'src/app/service/http.service';
+import { ApiService } from 'src/app/service/http-service';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
@@ -6,6 +6,7 @@ import { catchError, finalize, retry, tap, map, takeUntil } from 'rxjs/operators
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute, Router, ActivationEnd, ActivationStart } from '@angular/router';
 import { Subject } from 'rxjs';
+import { GlobalService } from './global.service';
 
 @Injectable()
 export class CustomInterceptor implements HttpInterceptor {
@@ -13,7 +14,7 @@ export class CustomInterceptor implements HttpInterceptor {
   token = ''
   private pendingHTTPRequests$ = new Subject<void>();
 
-  constructor( private message: NzMessageService, private router : Router) {
+  constructor( private message: NzMessageService, private router : Router, private httpService: ApiService, private global: GlobalService) {
     router.events.subscribe(event => {
       if (event instanceof ActivationStart) {
         // Cancel pending calls

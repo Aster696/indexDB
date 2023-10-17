@@ -1,0 +1,29 @@
+::ng-deep.ant-checkbox {
+    margin-top: 8px !important;
+    border: 1px solid #3C0480 !important;
+    border-radius: 6px !important;
+}
+
+::ng-deep.ant-checkbox-wrapper {
+    border: none !important;
+}
+
+.voter-avatar-container {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 16px;
+    z-index: 999;
+}
+
+.voter-avatar {
+    position: absolute;
+    right: 16px;
+    background-color: #2a4550;
+    width: 50px;
+}
+
+.view {
+    position: absolute;
+    right: -10px;
+}
