@@ -65,8 +65,8 @@ export class AppComponent {
         )
       } else{
         this.indexedDbService.getData(1).then((result) => {
-          this.data = result.data.response_data;
-          console.log(this.data)
+          this.voterList = result.data.response_data;
+          console.log(this.voterList)
         });
       }
     });
