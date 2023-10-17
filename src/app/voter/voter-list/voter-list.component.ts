@@ -72,6 +72,7 @@ followUpList : any= []
   ) { }
 
   ngOnInit(): void {
+    this.global.logout = localStorage.getItem('iyc_user_token')
     setTimeout(() => {
       this.global.userData= JSON.parse(localStorage.getItem('iyc_user_data'))
       this.global.globalUser= JSON.parse(localStorage.getItem('global_account_data'))
@@ -96,6 +97,7 @@ followUpList : any= []
     })
     // this.getPreVotersList()
     // this.getPreVotersList()
+    
   }
 
   createMobileForm(data?) {
@@ -432,6 +434,7 @@ followUpList : any= []
   quickViewToggle(): void {
     this.isActivityModal = false
     this.quickViewVisible = !this.quickViewVisible;
+    console.log( this._currToggleActions)
   }
 
   debounce: any;

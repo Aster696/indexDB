@@ -17,10 +17,10 @@
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen nzTitle="Voter" nzIcon="user-add">
         <ul>
-          <li nz-menu-item nzMatchRouter>
+          <li (click)="isCollapsed = !isCollapsed" nz-menu-item nzMatchRouter>
             <a routerLink="/voter">Voter</a>
           </li>
-          <li routerLink="/voter/add-voter" nz-menu-item nzMatchRouter>
+          <li (click)="isCollapsed = !isCollapsed" routerLink="/voter/add-voter" nz-menu-item nzMatchRouter>
             <a>Add Voter</a>
           </li>
         </ul>
@@ -37,15 +37,19 @@
             ></span>
             
             <nz-avatar 
+              *ngIf="isCollapsed"
               [nzSrc]="global?.domainUser?.account_logo"
               class="avatar"
-            >
-
-            </nz-avatar>
+            ></nz-avatar>
+        </span>
+        <span *ngIf="global?.logout && isCollapsed" class="logout">
+          <button nz-button nz-tooltip (click)="quickViewToggle()" class="mr-3"> 
+            Logout
+          </button>
         </span>
       </div>
     </nz-header>
-    <nz-content>
+    <nz-content *ngIf="isCollapsed">
       <div class="inner-content">
         <router-outlet></router-outlet>
       </div>

@@ -337,12 +337,12 @@
 
 </main>
 
-<section *ngIf="quickViewVisible">
+<section *ngIf="quickViewVisible && _currToggleActions =='multipleAction'">
     <nz-drawer [nzWidth]="'300px'" [nzTitle]="filtersTemplate" [nzClosable]="false" [nzVisible]="quickViewVisible"
         nzPlacement="right" (nzOnClose)="quickViewToggle()">
 
 
-        <section *ngIf="_currToggleActions =='multipleAction' else filters;">
+        <ng-container *nzDrawerContent>
             <div class="d-flex flex-column">
                 <button nz-button [nzType]="'link'" (click)="createNewFollow('activity'); isActivityModal = true;"
                     class="border px-3 mx-3 mb-3">Add Activity</button>
@@ -350,9 +350,9 @@
                     class="border px-3 mx-3 mb-3">Add FollowUp</button>
 
             </div>
-        </section>
+        </ng-container>
 
-        <ng-template #filters>
+        <ng-container *nzDrawerContent #filters>
             <div class="d-flex flex-wrap justify-content-start align-items-center">
                 <div class="d-flex flex-column">
                     <div class="d-flex align-items-start flex-column mb-3">
@@ -492,7 +492,164 @@
                 </div>
                 <!-- <button nz-button nzType="link" class="text-primary font-weight-semibold">Clear All</button> -->
             </div>
+        </ng-container>
+        <!-- <app-quick-view></app-quick-view> -->
+        <ng-template #filtersTemplate>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">{{ _currToggleActions =='multipleAction' ? 'Comment' : 'Filters'}}</h6>
+                <span nz-icon nzType="close-circle" nzTheme="twotone" (click)="quickViewToggle()"></span>
+            </div>
         </ng-template>
+    </nz-drawer>
+</section>
+
+<!-- filter -->
+<section *ngIf="quickViewVisible && _currToggleActions ==''">
+    <nz-drawer [nzWidth]="'300px'" [nzTitle]="filtersTemplate" [nzClosable]="false" [nzVisible]="quickViewVisible"
+        nzPlacement="right" (nzOnClose)="quickViewToggle()">
+
+
+        <ng-container *nzDrawerContent #filters>
+            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Booth: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currBooth"
+                            (nzFocus)="searchStaticDataGlobalFunction('Booth')"
+                            (keyup)="searchStaticDataGlobalFunction('Booth',$event)" nzAllowClear
+                            nzPlaceHolder="Select Booth/Ward">
+                            <nz-option *ngIf="isSelectLoader['Booth']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of boothList" [nzValue]="item.id"
+                                [nzLabel]="_currLanguage == 'en' ? (item?.name?.en + (item?.Ward ? '/' + item?.Ward?.name?.en : 'NA')) : item?.name?.hi + (item?.Ward ? '/' + item?.Ward?.name?.hi : 'NA')">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Ward: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currWard"
+                            (nzFocus)="searchStaticDataGlobalFunction('Ward')"
+                            (keyup)="searchStaticDataGlobalFunction('Ward',$event)" nzAllowClear
+                            nzPlaceHolder="Select Ward">
+                            <nz-option *ngIf="isSelectLoader['Ward']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of wardList" [nzValue]="item.id" [nzLabel]="item?.name?.en+'/'+item?.sector?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Sector: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currSector"
+                            (nzFocus)="searchStaticDataGlobalFunction('Sector')"
+                            (keyup)="searchStaticDataGlobalFunction('Sector',$event)" nzAllowClear
+                            nzPlaceHolder="Select Sector">
+                            <nz-option *ngIf="isSelectLoader['Sector']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of sectorList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Zone: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currZone"
+                            (nzFocus)="searchStaticDataGlobalFunction('Zone')"
+                            (keyup)="searchStaticDataGlobalFunction('Zone',$event)" nzAllowClear
+                            nzPlaceHolder="Select Zone">
+                            <nz-option *ngIf="isSelectLoader['Zone']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of zoneList" [nzValue]="item.id"
+                                [nzLabel]="_currLanguage == 'en' ? (item?.name?.en || '-') : (item?.name?.hi || '-')">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Star Voter: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currStarMark"
+                            nzAllowClear
+                            nzPlaceHolder="Select Star">
+                            <nz-option [nzValue]="true"
+                                [nzLabel]="'Star Voter'">
+                            </nz-option>
+                            <nz-option [nzValue]="false"
+                                [nzLabel]="'Not Star Voter'">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Assembly: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_crrAssembly"
+                            (nzFocus)="searchStaticDataGlobalFunction('Assembly')"
+                            (keyup)="searchStaticDataGlobalFunction('Assembly',$event)" nzAllowClear
+                            nzPlaceHolder="Select Assembly">
+                            <nz-option *ngIf="isSelectLoader['Assembly']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of assemblyList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Street: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currStreet"
+                            (nzFocus)="searchStaticDataGlobalFunction('Street')"
+                            (keyup)="searchStaticDataGlobalFunction('Street',$event)" nzAllowClear
+                            nzPlaceHolder="Select Street">
+                            <nz-option *ngIf="isSelectLoader['Street']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of streetList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Lane: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currLane"
+                            (nzFocus)="searchStaticDataGlobalFunction('Lane')"
+                            (keyup)="searchStaticDataGlobalFunction('Lane',$event)" nzAllowClear
+                            nzPlaceHolder="Select Lane">
+                            <nz-option *ngIf="isSelectLoader['Lane']" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Loading Data...
+                            </nz-option>
+                            <nz-option *ngFor="let item of laneList" [nzValue]="item.id" [nzLabel]="item?.name?.en">
+                            </nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <!-- <div class="d-flex align-items-start flex-column mb-3">
+                        <label>Is Benificary: </label>
+                        <nz-select nzShowSearch class="selectFilter mb-2 mr-3" [(ngModel)]="_currBenificary"
+                            nzAllowClear nzPlaceHolder="Select Is Benificary">
+                            <nz-option [nzValue]="true" [nzLabel]="'True'"> </nz-option>
+                            <nz-option [nzValue]="false" [nzLabel]="'False'"></nz-option>
+                        </nz-select>
+                    </div> -->
+
+                    <div class="d-flex justify-content-center mt-5 align-items-center">
+                        <button nz-button nzType="primary" class="mr-3"
+                            (click)="quickViewToggle(); setParams()">Apply</button>
+                        <button nz-button nzType="link" (click)="resetFilter()">Reset</button>
+                    </div>
+                </div>
+                <!-- <button nz-button nzType="link" class="text-primary font-weight-semibold">Clear All</button> -->
+            </div>
+        </ng-container>
         <!-- <app-quick-view></app-quick-view> -->
         <ng-template #filtersTemplate>
             <div class="d-flex justify-content-between align-items-center">
@@ -509,7 +666,7 @@
     <nz-drawer [nzWidth]="280" height="500" [nzBodyStyle]="{height:'85vh'}" [nzTitle]="null" [nzClosable]="false"
         [nzVisible]="quickViewVisible" nzPlacement="bottom" (nzOnClose)="quickViewToggle()" [nzHeight]="600">
         <!-- <app-quick-view></app-quick-view> -->
-        <div class="row mx-3">
+        <div *nzDrawerContent class="row mx-3">
             <div class="col-md-12">
                 <form nz-form [formGroup]="followUpForm">
                     <div class="row mt-3">
@@ -800,7 +957,7 @@
         <div class="d-flex justify-content-center flex-column">
 
         </div>
-        <div class="row">
+        <div *nzDrawerContent class="row">
             <div class="col-sm-12 col-6 mb-3">
                 <h6>Rate Voter</h6>
             </div>

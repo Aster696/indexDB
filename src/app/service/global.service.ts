@@ -30,6 +30,8 @@ export class GlobalService {
   domainUser: any = JSON.parse(localStorage.getItem('domain_user'))
   language: any = localStorage.getItem('appLanguage')
 
+  logout: any = localStorage.getItem('iyc_user_token')
+
   query_params: any
 
   // Current App Nav;

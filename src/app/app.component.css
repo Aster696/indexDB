@@ -67,6 +67,7 @@ nz-header {
 
 .app-header {
   position: relative;
+  width: 100%;
   height: 64px;
   padding: 0;
   background: #fff;
@@ -88,4 +89,10 @@ nz-content {
 .avatar {
   width: 50px;
   height: 50px;
+}
+
+.logout {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

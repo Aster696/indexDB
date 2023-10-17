@@ -48,6 +48,7 @@ registerLocaleData(en);
     NzMenuModule,
     WelcomeModule,
     NzAvatarModule,
+    DemoNgZorroAntdModule,
   ],
   providers: [
     ApiService,
