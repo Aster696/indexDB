@@ -32,11 +32,10 @@
             ],
             "styles": [
               "src/theme.less",
-              "src/styles.scss"
+              "src/styles.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.js",
-              "src/assets/lib/hljs/highlight.pack.js"
+              
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"

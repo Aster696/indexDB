@@ -1,0 +1,265 @@
+<div class="container-fluid h-100">
+  <div class="row" [ngClass]="_currentSection !== 'OTPVerification'  ? '' : 'h-100'">
+    <div class="col-12 p-0" *ngIf="_currentSection !== 'OTPVerification' && !ifTokenAuthorized">
+      <div class="container-fluid bg-primary w-100 h-100 px-3 bg-circles">
+        <div class="d-flex justify-content-between align-items-center py-3">
+          <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <img nz-image [src]="domain_user?.account_logo" height="60px" alt=""
+              class="h-auto mr-3">
+            <h5 class="text-white font-weight-semibold text-wrap">
+              {{domain_user?.name?.en || '-'}}
+            </h5>
+          </div>
+          <!-- <div clsas="d-flex align-items-center">
+            <img src="../../../assets/images/Ext_Images/Ellipse 1201cng_log.svg" alt="" height="80px"
+              class="h-auto py-3 mr-lg-3">
+          </div> -->
+
+        </div>
+        <div class="d-flex flex-column m-3 mb-5">
+          <h3 class="mb-0 font-size-24 text-white">{{loginPageContext?.header?.greeting}},</h3>
+          <label class="font-size-18 text-white">{{loginPageContext?.header?.subHeading}}</label>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!ifTokenAuthorized" class="col-lg-6 d-none custom-login-background"
+      style="background-image:url('https://img.freepik.com/free-vector/election-political-campaign_74855-6383.jpg?w=2000')">
+      <div class="d-flex h-100 p-h-40 p-v-15 flex-column justify-content-between">
+        <!-- <div>
+                    <img src="assets/images/logo/logo-white.png" alt="">
+                </div>
+                <div>
+                    <h1 class="text-white m-b-20 font-weight-normal">Exploring Enlink</h1>
+                    <p class="text-white font-size-16 lh-2 w-80 opacity-08">Climb leg rub face on everything give attitude nap all day for under the bed. Chase mice attack feet but rub face on everything hopped up.</p>
+                </div> -->
+        <!-- <div class="d-flex justify-content-between">
+                    <span class="text-white">© 2019 ThemeNate</span>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a class="text-white text-link" href="">Legal</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="text-white text-link" href="">Privacy</a>
+                        </li>
+                    </ul>
+                </div> -->
+      </div>
+    </div>
+    <div class="col-lg-12 bg-white login-bg-setter">
+      <div class="container h-100">
+        <div class="row no-gutters h-100 align-items-center">
+          <div class="col-md-8 col-lg-7 col-xl-6 px-3 mx-auto">
+            <div *ngIf="_currentSection == 'loginForm' && !ifTokenAuthorized">
+              <!-- <p class="text-dark">{{ router.url == '/authentication/employee-login' ? 'Employee Login' : 'StockistLogin'}}</p> -->
+              <h3 class="font-weight-bold mb-0">{{loginPageContext?.login?.title}}</h3>
+              <p>{{loginPageContext?.login?.subtitle}}</p>
+              <form nz-form [formGroup]="loginForm" nzLayout="vertical" class="login-form">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="d-flex w-100">
+                      <nz-form-item class="mr-2">
+                        <nz-form-control nzErrorTip="'Please select your Country!'">
+                          <nz-input-group nzCompact>
+                            <nz-select formControlName="mobile_prefix">
+                              <nz-option [nzLabel]="'+ 91'" [nzValue]="'India'"></nz-option>
+                            </nz-select>
+                          </nz-input-group>
+                        </nz-form-control></nz-form-item>
+                      <nz-form-item class="w-100">
+                        <nz-form-control [nzErrorTip]="loginPageContext?.login?.mob_error" nzHasFeedback>
+                          <nz-input-group [nzPrefix]="mobile_pre">
+                            <input type="text" nz-input formControlName="mobile"
+                              [placeholder]="loginPageContext?.login?.placeholder_mob" />
+                          </nz-input-group>
+                          <!-- <nz-input-group [nzPrefix]="prefixUser">
+                                          <input type="text" nz-input formControlName="mobile" maxlength="10"
+                                            placeholder="{{ router.url == '/authentication/employee-login' ? 'Enter your Full Name' : 'Enter Full Name'}}">
+                                        </nz-input-group> -->
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <nz-form-item>
+                      <nz-form-control [nzErrorTip]="nameError">
+                        <nz-input-group [nzPrefix]="prefixUser">
+                          <input type="text" nz-input formControlName="full_name"
+                            [placeholder]="loginPageContext?.login?.placeholder_name">
+                        </nz-input-group>
+                        <ng-template #nameError let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                              Name is required
+                          </ng-container>
+                          <!-- <ng-container *ngIf="control.hasError('minlength')">
+                            Name can not be less than 3 letters 
+                          </ng-container> -->
+                          <ng-container *ngIf="control.hasError('pattern')">
+                            Please enter a valid name(Only letters allowed)
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+
+                <!-- <nz-form-item>
+                  <nz-form-control>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span class="font-size-13 text-dark">OTP will be send your registered mobile no.</span>
+                    </div>
+                  </nz-form-control>
+                </nz-form-item> -->
+              </form>
+
+              <ng-template #prefixUser><i nz-icon nzType="user" class="font-size-16"></i></ng-template>
+              <ng-template #mobile_pre><i nz-icon nzType="phone" [nzRotate]="180"
+                  class="font-size-16"></i></ng-template>
+              <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
+
+            </div>
+
+            <div *ngIf="_currentSection == 'OTPVerification'" class="d-flex flex-column align-items-center">
+              <div class="d-flex align-items-center justify-content-center my-auto">
+                <img src="../../../assets/images/Ext_Images/image.png" alt="" height="200px"
+                  class="h-auto py-3 mr-lg-3">
+              </div>
+              <h1 class="font-weight-bold mb-3">{{loginPageContext?.otp?.title}}</h1>
+              <p *ngIf="isStockistCode">{{loginPageContext?.otp?.subtitle}}<br *ngIf="globalFunction.getDeviceType() == 'mobile' ? true : false">
+                {{formatedMobileString}} </p>
+              <p *ngIf="!isStockistCode">{{loginPageContext?.otp?.subtitle}} <br
+                  *ngIf="globalFunction.getDeviceType() == 'mobile' ? true : false"> {{formatedMobileString}} </p>
+
+              <div class="otp_container my-3">
+                <ng-otp-input (onInputChange)="onInputChange($event)"
+                  [config]="{length : 6, btnClass : 'hide_otp_btn', allowNumbersOnly : true }"></ng-otp-input>
+              </div>
+              <button nz-button class="login-form-button font-size-16 font-weight-semibold mt-3"
+                [nzLoading]="_apiCallLoader['verifyOTP']" (click)="verifyOTPFunction(loginForm)" [nzType]="'primary'"
+                nzBlock nzSize="large">{{loginPageContext?.otp?.btnOtp}}</button>
+
+              <div class="mt-3">
+                <span class="text-dark" *ngIf="realCountertimer === 0">{{loginPageContext?.otp?.btnSubText}}<a class="text-primary"
+                    (click)="sendOTPAPIFunction(loginForm)"> {{loginPageContext?.otp?.resendOtp}}</a></span>
+                <span class="text-dark" *ngIf="realCountertimer !== 0">Can try Resend in<a class="text-dark">
+                    {{realCountertimer}}sec</a></span>
+              </div>
+            </div>
+
+            
+            <!-- <h2>Sign In</h2>
+                        <p class="m-b-30">Enter your credential to get access</p>
+                        <form nz-form [formGroup]="loginForm" nzLayout="vertical" class="login-form">
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="userName">Username</nz-form-label>
+                                <nz-form-control nzErrorTip="Please input your username!">
+                                    <nz-input-group [nzPrefix]="prefixUser">
+                                        <input type="text" nz-input formControlName="userName" placeholder="Username">
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label nzRequired nzFor="password">Password</nz-form-label>
+                                <a class="font-size-13 p-t-10 text-muted" style="position:absolute; right: 0" [routerLink]="['/authentication/reset-password-1']">Forget Password?</a>
+                                <nz-form-control nzErrorTip="Please input your Password!">
+                                    <nz-input-group [nzPrefix]="prefixLock">
+                                        <input type="password" nz-input formControlName="password" placeholder="Password">
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-control>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="font-size-13 text-muted">Don't have an account? <a class="small" [routerLink]="['/authentication/sign-up-1']"> Signup</a></span>
+                                        <button nz-button class="login-form-button" [nzType]="'primary'">Sign In</button>
+                                    </div>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </form>
+                        <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
+                        <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template> -->
+          </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center" *ngIf="!ifTokenAuthorized">
+          <button nz-button class="login-form-button font-size-16 font-weight-semibold px-5" [nzType]="'primary'"
+            *ngIf="_currentSection !== 'OTPVerification'" [disabled]="loginForm.invalid ? true : false" nzBlock
+            [nzLoading]="_apiCallLoader['loginloader']" nzSize="large" style="max-width: 30rem;"
+            (click)="submitForm(loginForm)">{{loginPageContext?.btn?.btn1}}</button>
+        </div>
+        <!-- <div class="d-flex align-items-center justify-content-center mt-3"
+          *ngIf="_currentSection !== 'OTPVerification' && !ifTokenAuthorized">
+          <button nz-button nzType="link" class="" routerLink="/authentication/select-language">{{_currentLanguage == 'en' ? 'Change Language' :'भाषा बदलें' }} </button>
+
+        </div> -->
+
+      </div>
+
+    </div>
+
+  </div>
+  <div *ngIf="ifTokenAuthorized" class="d-flex justify-content-center align-items-center h-100">
+    <div class="d-flex flex-column align-items-center text-center">
+      <img src="../../../assets/images/Ext_Images/Rectanglesuccess.svg" width="200" class="mb-3" alt="">
+      <h6>{{loginPageContext?.successScreen}}</h6>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div>
+    <div class="col-xl-9 col-lg-9 mx-auto">
+
+      <div *ngIf="_currentSection == 'loginForm'">
+        <p class="text-dark">{{ router.url == '/authentication/employee-login' ? 'Employee Login' : 'StockistLogin'}}</p>
+        <h1 class="font-weight-bold mb-3">Lets get started</h1>
+        <form nz-form [formGroup]="loginForm" nzLayout="vertical" class="login-form"
+          (ngSubmit)="submitForm(loginForm)">
+          <nz-form-item>
+            <nz-form-control
+              [nzErrorTip]="router.url == '/authentication/employee-login' ? 'Please input your Mobile Number!' : 'Please input your Stockist ID or Mobile Number!'">
+              <nz-input-group [nzPrefix]="prefixUser">
+                <input type="text" nz-input formControlName="mobile"
+                  placeholder="{{ router.url == '/authentication/employee-login' ? 'Enter your Mobile Number' : 'Enter your Stockist ID or Mobile Number'}}">
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+
+          <button nz-button class="login-form-button font-size-16 font-weight-semibold" [nzType]="'primary'"
+            [nzLoading]="_apiCallLoader['loginloader']" nzBlock nzSize="large">Get OTP</button>
+          <nz-form-item>
+            <nz-form-control>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="font-size-13 text-dark">OTP will be send your registered mobile no.</span>
+              </div>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+        <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
+        <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
+      </div>
+
+      <div *ngIf="_currentSection == 'OTPVerification'">
+        <h1 class="font-weight-bold mb-3">OTP Verification</h1>
+        <p *ngIf="isStockistCode">Type the 6-digit verification code sent on your registered Mobile associated with code <br
+            *ngIf="globalFunction.getDeviceType() == 'mobile' ? true : false"> {{formatedMobileString}} </p>
+            <p *ngIf="!isStockistCode">Type the 6-digit verification code sent on your registered Mobile No <br
+              *ngIf="globalFunction.getDeviceType() == 'mobile' ? true : false"> {{formatedMobileString}} </p>
+
+        <div class="otp_container mt-4">
+          <ng-otp-input (onInputChange)="onInputChange($event)"
+            [config]="{length : 6, btnClass : 'hide_otp_btn', allowNumbersOnly : true }"></ng-otp-input>
+        </div>
+        <button nz-button class="login-form-button font-size-16 font-weight-semibold mt-5"
+          [nzLoading]="_apiCallLoader['verifyOTP']" (click)="verifyOTPFunction(loginForm)" [nzType]="'primary'"
+          nzBlock nzSize="large">Verify</button>
+
+        <div class="mt-3">
+          <span class="text-dark" *ngIf="realCountertimer === 0">Didn’t receive an OTP?<a class="text-primary"
+              (click)="sendOTPAPIFunction(loginForm)"> Resend OTP</a></span>
+          <span class="text-dark" *ngIf="realCountertimer !== 0">Can try Resend in<a class="text-dark">
+              {{realCountertimer}}sec</a></span>
+        </div>
+      </div>
+
+
+    </div>
+  </div> -->

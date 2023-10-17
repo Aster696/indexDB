@@ -1,9 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { Error1Component } from './authentication/error-1/error-1.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/voter' },
-  { path: 'voter', loadChildren: () => import('./voter/voter.module').then(m => m.VoterModule) }
+  { path: 'authentication', loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule) },
+  { path: 'voter', loadChildren: () => import('./voter/voter.module').then(m => m.VoterModule) },
+  {
+    path:'**',
+    component: Error1Component
+  },
+
 ];
 
 @NgModule({

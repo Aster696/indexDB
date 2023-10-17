@@ -1,0 +1,23 @@
+<div class="d-flex flex-column align-items-center my-5 pt-4">
+    <div class="d-flex flex-column align-items-center ">
+    <ng-container >
+        <img src="../../../assets/images/Ext_Images/Ellipse 1201cng_log.svg" alt="" style="height: 40%">
+    </ng-container>
+    <h6 class="font-size-16">Congress Party</h6>
+    </div>
+
+    <div class="d-flex flex-column align-items-center my-3">
+        <!-- <ng-container>
+            <img src="../../../assets/images/Ext_Images/head_profile.svg" alt="" style="height: 60%;width: auto;">
+        </ng-container> -->
+        <h4 class="text-primary mt-2">Cadre Management</h4>
+        </div>
+   
+        <div class="d-flex flex-column align-items-center w-100">
+            <h5>Select a Language</h5>
+            <nz-radio-group [(ngModel)]="radioValue" class="d-flex flex-column w-100 px-3" style="max-width: 80%;">
+                <button nz-button type="link" class="px-5 my-2" routerLink="/authentication/login" (click)="setLanguage('en')">English</button>
+                <button nz-button type="link" class="px-5" routerLink="/authentication/login" (click)="setLanguage('hi')">Hindi</button>
+              </nz-radio-group>
+        </div>
+</div>

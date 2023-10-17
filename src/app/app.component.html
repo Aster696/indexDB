@@ -1,5 +1,6 @@
 <nz-layout class="app-layout">
   <nz-sider class="menu-sidebar"
+            [ngClass]="isCollapsed ? 'side-nav-closed' : ''"
             nzCollapsible
             nzWidth="256px"
             nzBreakpoint="md"
@@ -12,26 +13,23 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+      <li nz-submenu nzOpen nzTitle="Voter" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/voter">Voter</a>
           </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
+          <li routerLink="/voter/add-voter" nz-menu-item nzMatchRouter>
+            <a>Add Voter</a>
           </li>
         </ul>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+      <!-- <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a>Basic Form</a>
           </li>
         </ul>
-      </li>
+      </li> -->
     </ul>
   </nz-sider>
   <nz-layout>

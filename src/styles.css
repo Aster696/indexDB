@@ -1,1 +1,192 @@
-/* You can add global styles to this file, and also import other style files */
+/* @import url('./assets/lib/hljs/styles/atom-one-light.css'); */
+/* // @import url('../node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css');
+// @import url('../node_modules/@fortawesome/fontawesome-free/css/all.min.css'); */
+/* @import './assets/scss/app.scss'; */
+
+
+.ant-form-item-label{
+    text-align: left;
+}
+
+.cardBorder{
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+        backface-visibility: hidden;
+}
+
+p{
+    color: #53535f
+}
+.h-unset{
+	min-height: unset !important;
+}
+
+.totalCount {
+    .ant-pagination-total-text {
+      margin-inline-end: auto;
+    }
+}
+.custom-login-background{
+    background-size: 85%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ant-select-show-search.ant-select-multiple .ant-select-selector{
+    height: auto;
+}
+
+.ant-select .ant-select-placeholder {
+  color: #edf2f9;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px !important;
+    height: 5px !important;
+  }
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #2f580d !important; 
+    border-radius: 10px !important;
+  }
+
+  /* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgb(214, 214, 214) !important; 
+    border-radius: 10px !important;
+  }
+  .ant-picker-ranges .ant-picker-preset>.ant-tag-blue {
+    color: #2f580d;
+    background: rgba(85, 38, 142, 0.1);
+    border-color: transparent;
+  }
+  .ant-card-extra {
+      z-index: 9 !important;
+  }
+  .ant-table-thead > tr > th {
+    padding: 0.475rem;
+  }
+
+  .dashboard
+  {.ant-table-tbody > tr > td {
+    padding: 0.675rem;
+    border-bottom: 1px solid #edf2f9;
+    white-space: pre-wrap;
+    white-space: pre-wrap
+  }
+}
+
+body{
+    background-color: white;
+}
+
+
+.post_image_style{
+    object-fit: cover;
+    height: 10rem;
+}
+
+.bg-circles{
+  background-image: url('/src/assets/images/Ext_Images/bubbles.svg')
+}
+.login-bg-setter{
+  border: 2px;
+  border-radius: 20px;
+  top: -1rem;
+  position: relative;
+  /* // padding-top: 100px; */
+}
+
+.carouselBanner {
+  overflow: scroll;
+    scroll-behavior: smooth;
+    overflow-x: overlay;
+    overflow-y: hidden; 
+}
+.selectFilter{
+    min-width: 14rem;
+}
+
+.selectFilter2{
+  min-width: 5rem;
+}
+
+.logo-dark{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* // font size */
+.font-18px {
+  font-size: 18px;
+}
+
+.font-20px {
+  font-size: 20px;
+}
+
+.font-50px {
+  font-size: 70px;
+}
+
+/* // cursor */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* // drawer */
+.drawer-close-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px
+}
+
+/* // background */
+.bg-primary {
+  background-color: #3C0480;
+}
+
+/* // border */
+.border-primary {
+  border: 1px solid #3C0480;
+}
+
+.post-image-height {
+  height: 18rem;
+  width: -webkit-fill-available; 
+  margin-inline: auto; 
+  object-fit: contain;
+}
+
+.bread-crum-header {
+  display: flex;
+  justify-content: end;
+}
+
+.side-nav-closed {
+  display: none;
+}
+
+@media print {
+  button {
+    visibility: hidden;
+  }
+}
+
+.display-768px {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .display-768px {
+    display: block;
+  }
+
+  .display-none-768px {
+    display: none;
+  }
+}

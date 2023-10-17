@@ -169,6 +169,10 @@ body{
   right: 10px;
 }
 
+.side-nav-closed {
+  display: none;
+}
+
 @media print {
   button {
     visibility: hidden;

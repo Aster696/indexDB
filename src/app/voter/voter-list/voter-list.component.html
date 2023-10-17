@@ -1,8 +1,8 @@
 <div class="bread-crum-header">
-    <button nz-button nzType="primary" class="mr-2 mb-2" routerLink="/voter/add-voter">+ Add Voter</button>
+    <button nz-button nzType="primary" routerLink="/voter/add-voter" class="mr-2">+ Add Voter</button>
 </div>
 
-<div class="d-block align-items-center mb-3">
+<div class="d-block align-items-center mt-3 mb-3">
     <div class="row">
         <div class="col-12 col-lg-4 mb-2">
             <div class="d-flex">
@@ -44,25 +44,6 @@
 
 <main>
     <div class="container bannerContext" *ngIf="isBannerVisible">
-        <!-- <div class="bannerContext"> -->
-        <!-- <span nz-icon nzType="close" nzTheme="outline" class="text-white font-size-16 font-weight-bold"
-            style="position: absolute; right: 1rem; top: 2rem;" (click)="isBannerVisible = false"></span>
-        <img src="../../../assets/images/Ext_Images/bannerImage.svg" class="w-100 img my-3" alt="">
-        <div class="d-flex flex-column align-items-center justify-content-center context py-3">
-            <img src="../../../assets/images/Ext_Images/Ellipse 1201cng_log.svg" alt="" height="40px">
-            <h6 class="text-white d-flex d-lg-none mb-0">{{_currLanguage == 'en' ? globalData?.party_name?.en : globalData?.party_name?.hi}}</h6>
-            <h3 class="text-white d-lg-flex d-none mb-0 font-size-24">{{_currLanguage == 'en' ? globalData?.party_name?.en : globalData?.party_name?.hi}}</h3>
-            <h4 class="text-white d-flex d-lg-none" style="white-space: nowrap;">{{_currLanguage == 'en' ? globalData?.name?.en : globalData?.name?.hi}}</h4>
-            <h1 class="text-white d-lg-flex d-none font-size-60" style="white-space: nowrap;">{{_currLanguage == 'en' ? globalData?.name?.en : globalData?.name?.hi}}</h1>
-            <button nz-button nzType="link" [routerLink]="'/home/about-party'"
-                class="d-xs-none d-lg-none d-flex bg-white text-primary align-items-center" nzSize="small">{{_currLanguage == 'en' ? 'Know More' : 'अधिक जानकारी'}}
-                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-            </button>
-            <button nz-button nzType="link" [routerLink]="'/home/about-party'"
-                class="d-xs-none d-lg-flex bg-white align-items-center text-primary d-none font-weight-bold" nzSize="large">{{_currLanguage == 'en' ? 'Know More' : 'अधिक जानकारी'}}
-                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-            </button>
-        </div> -->
     </div>
     <!-- <nz-card [nzLoading]="api_loader['list']" class="d-flex d-lg-none"> -->
     <div class="">
