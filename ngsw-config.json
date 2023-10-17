@@ -30,7 +30,7 @@
   "dataGroups": [
     {
       "name": "api",
-      "urls": ["https://catfact.ninja/**"],
+      "urls": ["https://api.chatiyc.com/**"],
       "cacheConfig": {
         "strategy": "performance",
         "maxSize": 100

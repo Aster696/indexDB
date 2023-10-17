@@ -391,6 +391,8 @@ followUpList : any= []
           this.votersList = result.data.response_data;
           console.log(this.votersList)
         });
+        this.api_loader['list'] = false
+
       }
     });
   }
