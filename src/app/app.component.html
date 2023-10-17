@@ -8,6 +8,11 @@
             [nzTrigger]="null">
     <div class="sidebar-logo">
       <a target="_blank">
+        <nz-avatar 
+          *ngIf="global?.domainUser?.account_logo"
+          [nzSrc]="global?.domainUser?.account_logo"
+          class="avatar"
+        ></nz-avatar>
         <!-- <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo"> -->
         <h1>
           {{(global?.domainUser?.name?.en | titlecase) || '-'}}
@@ -37,7 +42,7 @@
             ></span>
             
             <nz-avatar 
-              *ngIf="isCollapsed"
+              *ngIf="isCollapsed && global?.domainUser?.account_logo"
               [nzSrc]="global?.domainUser?.account_logo"
               class="avatar"
             ></nz-avatar>
