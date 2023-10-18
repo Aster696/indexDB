@@ -39,4 +39,15 @@ export class IndexedDbService {
   storeActivityData(data: any){
     return this.db.table("voterActivityData").put({ data });
   }
+
+  getOfflineActivityData() {
+    return this.db.table("voterActivityData").toArray();
+  }
+
+  deleteOfflineActivityData(id: number){
+    return this.db.table("voterActivityData").delete(id);
+  }
+
+
+
 }
