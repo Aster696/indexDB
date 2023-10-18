@@ -101,6 +101,10 @@ followUpList : any= []
     }
   }
 
+  searchIndexDb() {
+    this.votersList = this.indexedDbService.searchDataByProperty('data', this._currSearchValue)
+  }
+
   createMobileForm(data?) {
     this.mobileForm = this.fb.group({
       mobile: [data?.mobile || '', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
@@ -417,7 +421,10 @@ followUpList : any= []
 
       } else{
         this.indexedDbService.getData(this.pageIndex, this.globalPageSize).then((result) => {
-          this.votersList = result;
+          this.votersList = []
+          for(let info of result) {
+            this.votersList.push(info?.data)
+          }
           console.log(this.votersList)
         });
         this.api_loader['list'] = false

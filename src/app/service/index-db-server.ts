@@ -51,6 +51,10 @@ export class IndexedDbService {
     return this.db.table("voterActivityData").delete(id);
   }
 
+  searchDataByProperty(propertyName: any, valueToMatch: any) {
+    return this.db.table("voterData").where(propertyName).equals(valueToMatch).toArray();
+  }
+  
 
 
 }
