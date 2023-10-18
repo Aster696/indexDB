@@ -15,11 +15,7 @@ export class IndexedDbService {
     this.db = new Dexie('VoterDataset');
     this.db.version(1).stores({
       voterData: '++id, data',
-<<<<<<< HEAD
-      // voterActivityData: '++id, data'
-=======
       voterActivityData: '++id, data'
->>>>>>> a56211f2ee3ed7218f666da6a4f38229282c3c24
     });
 
     // Check if the table 'voterData' exists
@@ -28,16 +24,21 @@ export class IndexedDbService {
     if (!tableExists) {
       console.log("table not exist")
       // Table doesn't exist, so delete the entire database and recreate
-      // await this.deleteDatabase();
-      // this.db.close(); // Close the old database instance
-      // this.initDatabase(); // Recreate the database
+      await this.deleteDatabase();
+      this.db.close(); // Close the old database instance
+      this.initDatabase(); // Recreate the database
     }
   }
 
   private async tableExists(tableName: string): Promise<boolean> {
-    // Check if the table name exists in the database
-    const count = await this.db.table(tableName).where('id').between(0, 1).count();
-    return count === 0;
+    try{
+      // Check if the table name exists in the database
+      const count = await this.db.table(tableName).where('id').between(0, 1).count();
+      return true;
+    } catch (error){
+      return false
+    }
+    
   }
 
   private async deleteDatabase() {

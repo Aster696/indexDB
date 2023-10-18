@@ -449,6 +449,8 @@ followUpList : any= []
           for(let info of res?.data) {
             this.indexedDbService.saveData(info)
             console.log(info)
+
+            break
           }
           // this.dumbPage = this.dumbPage + 1
           resolve(res?.data)
