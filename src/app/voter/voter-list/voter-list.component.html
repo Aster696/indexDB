@@ -143,6 +143,11 @@
                     (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
                     [nzShowTotal]="botTotalCount"
                 ></nz-pagination>
+                <ng-template #botTotalCount>
+                    <div class="font-weight-semibold">
+                        <b>{{total_count}} Results Found </b>
+                    </div>
+                </ng-template>
             </div>
         </div>
 
