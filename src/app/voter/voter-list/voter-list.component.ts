@@ -420,11 +420,12 @@ followUpList : any= []
         ///////////////////////////////
 
       } else{
-        this.indexedDbService.getData(this.pageIndex, this.globalPageSize).then((result) => {
+        this.indexedDbService.getData(this.pageIndex, this.globalPageSize).then((result: any) => {
           this.votersList = []
-          for(let info of result) {
-            this.votersList.push(info?.data)
-          }
+          // for(let info of result) {
+          //   this.votersList.push(info?.data)
+          // }
+          this.votersList = result?.data
           console.log(this.votersList)
         });
         this.api_loader['list'] = false
@@ -443,7 +444,7 @@ followUpList : any= []
         if (res.success) {
           for(let info of res?.data) {
             this.indexedDbService.saveData(info)
-            // console.log(info)
+            console.log(info)
           }
           // this.dumbPage = this.dumbPage + 1
           resolve(res?.data)
