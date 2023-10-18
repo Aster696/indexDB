@@ -9,10 +9,10 @@
 
                 <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
                     <input type="text" nz-input placeholder="Search By Full Name & Epic Number"
-                        [(ngModel)]="_currSearchValue" (keyup.enter)="getVotersList()" />
+                        [(ngModel)]="_currSearchValue" (keyup.enter)="getVotersList(); searchIndexDb()" />
                 </nz-input-group>
                 <ng-template #suffixIconButton>
-                    <button nz-button nzType="secondary" nzSearch (click)="getVotersList()">
+                    <button nz-button nzType="secondary" nzSearch (click)="getVotersList(); searchIndexDb()">
                         <i nz-icon nzType="search"></i>
                     </button>
                 </ng-template>
@@ -138,12 +138,12 @@
                         <!-- <nz-divider class="my-0"></nz-divider> -->
                     </nz-card>
                 </div>
+                <nz-pagination 
+                    [nzPageIndex]="pageIndex" [nzTotal]="total_count" nzShowSizeChanger [nzPageSize]="globalPageSize"
+                    (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
+                    [nzShowTotal]="botTotalCount"
+                ></nz-pagination>
             </div>
-            <nz-pagination 
-                [nzPageIndex]="pageIndex" [nzTotal]="total_count" nzShowSizeChanger [nzPageSize]="globalPageSize"
-                (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
-                [nzShowTotal]="botTotalCount"
-            ></nz-pagination>
         </div>
 
     </div>

@@ -15,7 +15,11 @@ export class IndexedDbService {
     this.db = new Dexie('VoterDataset');
     this.db.version(1).stores({
       voterData: '++id, data',
+<<<<<<< HEAD
       // voterActivityData: '++id, data'
+=======
+      voterActivityData: '++id, data'
+>>>>>>> a56211f2ee3ed7218f666da6a4f38229282c3c24
     });
 
     // Check if the table 'voterData' exists
@@ -48,19 +52,20 @@ export class IndexedDbService {
   //   });
   // }
 
-  saveData(id: number, data: any) {
-    return this.db.table("voterData").put({ id, data });
+  saveData( data: any) {
+    return this.db.table("voterData").put({ data });
   }
 
-  getData(id: number) {
-    return this.db.table("voterData").get(id);
+  getData(id: number, pageSize: any) {
+    return this.db.table("voterData")
+    .offset(id)
+    .limit(pageSize)
+    .toArray();
   }
 
   getAllData() {
     return this.db.table("voterData").toArray();
   }
-
-
 
   ////////////// offline activity /////////////////
   storeActivityData(data: any){
@@ -75,6 +80,10 @@ export class IndexedDbService {
     return this.db.table("voterActivityData").delete(id);
   }
 
+  searchDataByProperty(propertyName: any, valueToMatch: any) {
+    return this.db.table("voterData").where(propertyName).equals(valueToMatch).toArray();
+  }
+  
 
 
 }

@@ -72,7 +72,7 @@ followUpList : any= []
     private indexedDbService: IndexedDbService, private networkStatusService: NetworkStatusService  
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.global.logout = localStorage.getItem('iyc_user_token')
     setTimeout(() => {
       this.global.userData= JSON.parse(localStorage.getItem('iyc_user_data'))
@@ -96,9 +96,17 @@ followUpList : any= []
         this.getVotersList()
       }
     })
-    // this.getPreVotersList()
-    // this.getPreVotersList()
-    
+    for(let i = 0; i < 200; i++) {
+      await this.getPreVotersList()
+    }
+  }
+
+  searchIndexDb() {
+    this.networkStatusService.isOnline().subscribe((online: any) => { 
+      if(!online) {
+        this.votersList = this.indexedDbService.searchDataByProperty('data', this._currSearchValue)
+      }
+    })
   }
 
   createMobileForm(data?) {
@@ -396,16 +404,6 @@ followUpList : any= []
       data[temp] = this._currSearchValue;
     }
 
-    // Check if there's cached data first
-    caches.match('voter_list').then(cachedResponse => {
-      if (cachedResponse) {
-        // Display cached data
-        cachedResponse.json().then(res => {
-          this.votersList = res?.data;
-          console.log('Cached data:', res);
-        });
-      }
-    });
     this.networkStatusService.isOnline().subscribe((online: any) => {
       this._isOnline = online
       console.log(online)
@@ -415,14 +413,7 @@ followUpList : any= []
             this.votersList = res?.data;
             this.total_count = res.total_count
             this.api_loader['list'] = false
-            // console.log('Network data:', res);
-    
-            // Cache the network response for future use
-            const cacheKey = 'voter_list';
-            caches.open('voter_list').then(cache => {
-              const response = new Response(JSON.stringify(res));
-              cache.put(cacheKey, response);
-            });
+            // this.indexedDbService.saveData( res?.data)
           } else {
             this.api_loader['list'] = false
           }
@@ -433,8 +424,12 @@ followUpList : any= []
         ///////////////////////////////
 
       } else{
-        this.indexedDbService.getData(1).then((result) => {
-          this.votersList = result.data.response_data;
+        this.indexedDbService.getData(this.pageIndex, this.globalPageSize).then((result: any) => {
+          this.votersList = []
+          // for(let info of result) {
+          //   this.votersList.push(info?.data)
+          // }
+          this.votersList = result?.data
           console.log(this.votersList)
         });
         this.api_loader['list'] = false
@@ -445,30 +440,22 @@ followUpList : any= []
 
   dumbPage: number = 1
   getPreVotersList() {
-    // console.log(tableFilter)
-    // this.api_loader['list'] = true;
-    this.votersList = []
     let data = { 'end_point': 'FETCH_VOTER_LIST_API_URL' }
     data['page'] = this.dumbPage
-    data['limit'] = 5000
-    this.dumbPage = this.dumbPage + 1
-    // Object.keys(this.voterParams).forEach(key => {
-    //   data[key] = this.voterParams[key]
-    // })
-    
-    // if (this._currSearchValue) {
-    //   let temp = this._currLanguage == 'en' ? 'search_param' : 'search_param'
-    //   data[temp] = this._currSearchValue;
-    // }
-    this.http.getVoterList(data).subscribe((res: any) => {
-      if (res.success) {
-        // this.votersList = res.data;
-        // this.total_count = res.total_count
-        // this.api_loader['list'] = false
-        // console.log(res)
-      } else {
-        // this.api_loader['list'] = false
-      }
+    data['limit'] = 30
+    return new Promise((resolve, reject) => {
+      this.http.getVoterList(data).subscribe((res: any) => {
+        if (res.success) {
+          for(let info of res?.data) {
+            this.indexedDbService.saveData(info)
+            console.log(info)
+          }
+          // this.dumbPage = this.dumbPage + 1
+          resolve(res?.data)
+        }else {
+          reject(res?.success)
+        }
+      })
     })
     
   }
