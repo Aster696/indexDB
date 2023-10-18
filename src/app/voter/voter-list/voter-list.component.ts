@@ -428,6 +428,10 @@ followUpList : any= []
           }
         })
         
+        // ### call background process
+        this.pushDataWhenOnline()
+        ///////////////////////////////
+
       } else{
         this.indexedDbService.getData(1).then((result) => {
           this.votersList = result.data.response_data;
@@ -771,6 +775,46 @@ followUpList : any= []
   handleClose() {
     this.modalTitle = ''
     this.isVisible = false
+  }
+
+
+
+
+  // ##### this function is used to push the data in background when get online connection
+  pushDataWhenOnline(){
+    let offline_activity_data = []
+    this.indexedDbService.getOfflineActivityData().then((result) => {
+      offline_activity_data = result
+
+      for(var a_offline_data in offline_activity_data){
+
+        // #### process the api calls
+        let service_dataset = {}
+        let form_data = new FormData;
+
+        for(var a_data in offline_activity_data[a_offline_data].data){
+          if(a_data == "service_type" || a_data == "voter_id"){
+            service_dataset[a_data] = offline_activity_data[a_offline_data].data[a_data]
+            continue
+          }
+
+          form_data.append(a_data, offline_activity_data[a_offline_data].data[a_data])
+          // console.log(offline_activity_data[a_offline_data].data[a_data])
+        }
+
+
+        // ### now call the API
+        this.http.editVoter(service_dataset['voter_id'], form_data).subscribe((res:any)=>{
+          if(res.success){
+            // console.log("deleting the index", offline_activity_data[a_offline_data].id)
+            // this.indexedDbService.deleteOfflineActivityData(offline_activity_data[a_offline_data].id)
+          }
+        })
+        this.indexedDbService.deleteOfflineActivityData(offline_activity_data[a_offline_data].id)
+
+        console.log(offline_activity_data[a_offline_data])
+      }
+    });
   }
 
 }
