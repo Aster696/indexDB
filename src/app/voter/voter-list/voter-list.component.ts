@@ -98,19 +98,7 @@ followUpList : any= []
     })
     for(let i = 0; i < 200; i++) {
       await this.getPreVotersList()
-      if(i === 50) {
-        // this.global.searchDataByProperty('')
-      }
     }
-  }
-
-  searchIndexDB() {
-    this.indexedDbService.getAllData().then((data) => {
-      console.log(data, 'data');
-      // Handle or process the data as needed
-    }).catch((error) => {
-      console.error('Error retrieving data:', error);
-    });
   }
 
   createMobileForm(data?) {
@@ -417,7 +405,7 @@ followUpList : any= []
             this.votersList = res?.data;
             this.total_count = res.total_count
             this.api_loader['list'] = false
-            this.indexedDbService.saveData(this.pageIndex, res?.data)
+            // this.indexedDbService.saveData( res?.data)
           } else {
             this.api_loader['list'] = false
           }
@@ -428,8 +416,8 @@ followUpList : any= []
         ///////////////////////////////
 
       } else{
-        this.indexedDbService.getData(this.pageIndex).then((result) => {
-          this.votersList = result.data.response_data;
+        this.indexedDbService.getData(this.pageIndex, this.globalPageSize).then((result) => {
+          this.votersList = result;
           console.log(this.votersList)
         });
         this.api_loader['list'] = false
@@ -447,7 +435,7 @@ followUpList : any= []
       this.http.getVoterList(data).subscribe((res: any) => {
         if (res.success) {
           for(let info of res?.data) {
-            this.indexedDbService.saveData(this.dumbPage, info)
+            this.indexedDbService.saveData(info)
             console.log(info)
           }
           // this.dumbPage = this.dumbPage + 1
