@@ -35,8 +35,6 @@ export class IndexedDbService {
     return this.db.table("voterData").toArray();
   }
 
-
-
   ////////////// offline activity /////////////////
   storeActivityData(data: any){
     return this.db.table("voterActivityData").put({ data });
