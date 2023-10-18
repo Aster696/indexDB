@@ -102,7 +102,11 @@ followUpList : any= []
   }
 
   searchIndexDb() {
-    this.votersList = this.indexedDbService.searchDataByProperty('data', this._currSearchValue)
+    this.networkStatusService.isOnline().subscribe((online: any) => { 
+      if(!online) {
+        this.votersList = this.indexedDbService.searchDataByProperty('data', this._currSearchValue)
+      }
+    })
   }
 
   createMobileForm(data?) {
