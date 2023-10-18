@@ -138,12 +138,12 @@
                         <!-- <nz-divider class="my-0"></nz-divider> -->
                     </nz-card>
                 </div>
+                <nz-pagination 
+                    [nzPageIndex]="pageIndex" [nzTotal]="total_count" nzShowSizeChanger [nzPageSize]="globalPageSize"
+                    (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
+                    [nzShowTotal]="botTotalCount"
+                ></nz-pagination>
             </div>
-            <nz-pagination 
-                [nzPageIndex]="pageIndex" [nzTotal]="total_count" nzShowSizeChanger [nzPageSize]="globalPageSize"
-                (nzPageIndexChange)="votersList[0] ? getVotersList($event) : null"
-                [nzShowTotal]="botTotalCount"
-            ></nz-pagination>
         </div>
 
     </div>
